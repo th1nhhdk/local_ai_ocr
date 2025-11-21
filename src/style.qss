@@ -1,0 +1,183 @@
+/* Nord Color Palette 
+   Polar Night: #2E3440, #3B4252, #434C5E, #4C566A
+   Snow Storm:  #D8DEE9, #E5E9F0, #ECEFF4
+   Frost:       #8FBCBB, #88C0D0, #81A1C1, #5E81AC
+   Aurora:      #BF616A (Red), #D08770 (Orange), #EBCB8B (Yellow), #A3BE8C (Green), #B48EAD (Purple)
+*/
+
+QMainWindow,
+QWidget {
+    background-color: #2E3440;
+    color: #D8DEE9;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
+}
+
+/* --- Group Boxes --- */
+QGroupBox {
+    border: 1px solid #4C566A;
+    border-radius: 6px;
+    margin-top: 24px;
+    font-weight: bold;
+    color: #ECEFF4;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
+    color: #88C0D0;
+    /* Frost Blue */
+}
+
+/* --- Buttons --- */
+QPushButton {
+    background-color: #434C5E;
+    color: #ECEFF4;
+    border: 1px solid #3B4252;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+QPushButton:hover {
+    background-color: #4C566A;
+    border-color: #5E81AC;
+}
+
+QPushButton:pressed {
+    background-color: #3B4252;
+}
+
+QPushButton:disabled {
+    background-color: #2E3440;
+    color: #4C566A;
+    border: 1px solid #2E3440;
+}
+
+/* Specific Action Buttons */
+#btnRun {
+    background-color: #A3BE8C;
+    /* Nord Green */
+    color: #2E3440;
+    border: 1px solid #8FBCBB;
+}
+
+#btnRun:hover {
+    background-color: #8FBCBB;
+}
+
+#btnRun:disabled {
+    background-color: #2E3440;
+    color: #4C566A;
+    border-color: #4C566A;
+}
+
+#btnStop {
+    background-color: #BF616A;
+    /* Nord Red */
+    color: #ECEFF4;
+    border: 1px solid #BF616A;
+}
+
+#btnStop:hover {
+    background-color: #D08770;
+    /* Nord Orange */
+}
+
+#btnStop:disabled {
+    background-color: #2E3440;
+    color: #4C566A;
+    border-color: #4C566A;
+}
+
+/* Model Info Button */
+QPushButton[model_type="fast"] {
+    background-color: #BF616A;
+    color: #ECEFF4;
+    font-weight: bold;
+    border: 1px solid #BF616A;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QPushButton[model_type="fast"]:hover {
+    border: 1px solid #ECEFF4;
+}
+
+QPushButton[model_type="slow"] {
+    background-color: #A3BE8C;
+    color: #2E3440;
+    font-weight: bold;
+    border: 1px solid #A3BE8C;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QPushButton[model_type="slow"]:hover {
+    border: 1px solid #ECEFF4;
+}
+
+/* --- Inputs & Lists --- */
+QTextEdit,
+QListWidget {
+    background-color: #3B4252;
+    border: 1px solid #4C566A;
+    color: #ECEFF4;
+    border-radius: 4px;
+    selection-background-color: #5E81AC;
+    selection-color: #ECEFF4;
+    padding: 5px;
+}
+
+/* --- Combo Box --- */
+QComboBox {
+    background-color: #3B4252;
+    border: 1px solid #4C566A;
+    color: #ECEFF4;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+QComboBox:hover {
+    border-color: #88C0D0;
+}
+
+QComboBox::drop-down {
+    border: 0px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #3B4252;
+    color: #ECEFF4;
+    selection-background-color: #5E81AC;
+}
+
+/* --- Progress Bar --- */
+QProgressBar {
+    border: 1px solid #4C566A;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #2E3440;
+    color: #ECEFF4;
+}
+
+QProgressBar::chunk {
+    background-color: #88C0D0;
+    /* Nord Blue */
+    width: 20px;
+}
+
+/* --- Splitter & Labels --- */
+QSplitter::handle {
+    background-color: #4C566A;
+}
+
+QLabel {
+    color: #D8DEE9;
+}
+
+#lblProofread {
+    color: #ECEFF4;
+    font-size: 12px;
+}
