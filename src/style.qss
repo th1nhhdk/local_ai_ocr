@@ -1,5 +1,6 @@
 /* src/style.qss */
-/* Nord Color Palette 
+
+/* Nord Color Palette
    Polar Night: #2E3440, #3B4252, #434C5E, #4C566A
    Snow Storm:  #D8DEE9, #E5E9F0, #ECEFF4
    Frost:       #8FBCBB, #88C0D0, #81A1C1, #5E81AC
@@ -27,8 +28,7 @@ QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top left;
     padding: 0 5px;
-    color: #88C0D0;
-    /* Frost Blue */
+    color: #88C0D0; /* Frost Blue */
 }
 
 /* --- Buttons --- */
@@ -58,8 +58,7 @@ QPushButton:disabled {
 
 /* Specific Action Buttons */
 #btnRun {
-    background-color: #A3BE8C;
-    /* Nord Green */
+    background-color: #A3BE8C; /* Nord Green */
     color: #2E3440;
     border: 1px solid #8FBCBB;
 }
@@ -75,48 +74,19 @@ QPushButton:disabled {
 }
 
 #btnStop {
-    background-color: #BF616A;
-    /* Nord Red */
+    background-color: #BF616A; /* Nord Red */
     color: #ECEFF4;
     border: 1px solid #BF616A;
 }
 
 #btnStop:hover {
-    background-color: #D08770;
-    /* Nord Orange */
+    background-color: #D08770; /* Nord Orange */
 }
 
 #btnStop:disabled {
     background-color: #2E3440;
     color: #4C566A;
     border-color: #4C566A;
-}
-
-/* Model Info Button */
-QPushButton[model_type="fast"] {
-    background-color: #BF616A;
-    color: #ECEFF4;
-    font-weight: bold;
-    border: 1px solid #BF616A;
-    border-radius: 4px;
-    padding: 4px;
-}
-
-QPushButton[model_type="fast"]:hover {
-    border: 1px solid #ECEFF4;
-}
-
-QPushButton[model_type="slow"] {
-    background-color: #A3BE8C;
-    color: #2E3440;
-    font-weight: bold;
-    border: 1px solid #A3BE8C;
-    border-radius: 4px;
-    padding: 4px;
-}
-
-QPushButton[model_type="slow"]:hover {
-    border: 1px solid #ECEFF4;
 }
 
 /* --- Inputs & Lists --- */
@@ -164,8 +134,7 @@ QProgressBar {
 }
 
 QProgressBar::chunk {
-    background-color: #88C0D0;
-    /* Nord Blue */
+    background-color: #88C0D0; /* Nord Blue */
     width: 20px;
 }
 

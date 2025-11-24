@@ -3,5 +3,8 @@
 /python/
 /src/__pycache__/
 /test/
-/Modelfile
+/bin/.wget-hsts
+/OllamaSetup.exe
+/python.zip
+/get-pip.py
 /TODO

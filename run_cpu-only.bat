@@ -16,8 +16,6 @@ set "GGML_VK_VISIBLE_DEVICES=-1"
 set "OLLAMA_HOST=http://127.0.0.1:11435"
 
 set "OLLAMA_MODELS=%SCRIPTROOT%models"
-:: Default is 5m, too long
-set "OLLAMA_KEEP_ALIVE=30s"
 
 echo Starting Ollama (CPU-Only)...
 start /B "" "%OLLAMA_BIN%" serve >nul 2>&1

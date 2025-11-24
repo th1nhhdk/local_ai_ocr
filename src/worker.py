@@ -23,9 +23,9 @@ class OCRWorker(QThread):
         try:
             for display_name, filepath, page_index in self.queue_items:
                 if not self.is_running: break 
-                
+
                 self.image_started.emit(f"\n--- Processing: {display_name} ---\n")
-                
+
                 start_time = time.time()
                 try:
                     if page_index == -1:
@@ -41,15 +41,15 @@ class OCRWorker(QThread):
                 for chunk in stream_ocr_response(self.client, self.model_name, self.prompt, img_bytes):
                     if not self.is_running: break 
                     self.stream_chunk.emit(chunk)
-                
+
                 duration = time.time() - start_time
-                
+
                 # Explicitly delete bytes to free RAM immediately
                 del img_bytes 
-                
+
                 if not self.is_running: break
                 self.image_finished.emit(duration)
-            
+
             self.finished_all.emit()
 
         except Exception as e:

@@ -1,4 +1,4 @@
-import os
+# src/file_handler.py
 import io
 import fitz  # PyMuPDF
 from PIL import Image # Pillow
