@@ -1,0 +1,49 @@
+{
+    "btn_about": "Giới thiệu",
+    "about_title": "Giới thiệu phần mềm",
+    "about_text": "<center><img src='{}' width='64' height='64'><br><b>Local AI OCR</b></center><b>Phiên bản:</b> {}<br><b>Tác giả:</b> {}",
+    "btn_about_git": "GitHub",
+    "btn_unload": "Xả Model AI",
+
+    "btn_add_img": "Thêm ảnh",
+    "btn_add_pdf": "Thêm PDF",
+    "btn_clear": "Xóa sạch Hàng chờ",
+    "lbl_queue": "Hàng chờ xử lý:",
+
+    "group_settings": "Cài đặt",
+    "lbl_prompt": "Chọn chế độ:",
+    "prompt_labels": {
+        "p_markdown": "Tài liệu Markdown (giữ định dạng)",
+        "p_ocr": "OCR Tiêu chuẩn",
+        "p_freeocr": "OCR Tự do (Free OCR)"
+    },
+
+    "btn_run_ready": "Bắt đầu xử lý ({})",
+    "btn_run": "Bắt đầu xử lý",
+    "btn_stop": "DỪNG LẠI",
+
+    "tab_raw": "Kết quả thô",
+    "tab_fancy": "Kết quả đẹp",
+    "lbl_proofread": "Vui lòng kiểm tra lại kết quả, đặc biệt khi có thông tin quan trọng.",
+    "btn_copy": "Sao chép \"{}\"",
+
+    "title_info": "Thông báo",
+    "title_done": "Hoàn tất",
+    "title_error": "Lỗi",
+    "title_disclaimer": "Lưu ý",
+
+    "msg_started": "Đang xử lý: {}",
+    "msg_stopped": "Đã được dừng lại bởi người dùng.",
+    "msg_elapsed": "{}: Hoàn thành trong {:.2f}s",
+    "msg_done": "Hoàn tất xử lý.",
+    "msg_total": "Tổng thời gian: {:.2f}s",
+    "msg_model_unloaded": "Đã giải phóng Model AI khỏi bộ nhớ.",
+    "msg_model_not_loaded": "Model AI hiện không có trong bộ nhớ.",
+    "msg_loop_disclaimer": "<b>Lưu ý:</b> Vì giới hạn kỹ thuật, AI OCR <b>có thể bị kẹt</b> trong vòng lặp vô hạn.<br>Nếu chuyện đó xảy ra, hãy nhấn <b>DỪNG LẠI</b>.",
+
+    "dlg_page_range_title": "Chọn Phạm vi Trang",
+    "dlg_page_range_msg": "Tập tin: {}<br>Tổng số trang: {}<br><br>Chọn trang cần nhập:",
+    "dlg_page_range_start": "Từ trang:",
+    "dlg_page_range_end": "Đến trang:",
+    "dlg_page_range_error": "<b>Lỗi:</b> Trang bắt đầu không thể lớn hơn trang kết thúc."
+}

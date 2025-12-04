@@ -1,33 +1,40 @@
-<img src='src/icon.png' width='128' height='128'>
+<img src='src/res/icon.png' width='128' height='128'>
 
-# Local AI OCR (v1.5)
+### Ngôn ngữ:
+[Tiếng Việt](README.md) |
+[English](README_en.md)
 
-Một phần mềm OCR offline (sau khi thiết lập lần đầu), portable, có thể xử lý ảnh và file PDF nhờ việc sử dụng AI nội bộ **DeepSeek-OCR**.
+# Local AI OCR (v2.0)
+
+Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần đầu), **portable**, có thể xử lý ảnh và tệp PDF, sử dụng AI *DeepSeek-OCR* (chạy nội bộ trực tiếp trên máy).
 
 ## Tính năng
 
-- **Chạy offline (nội bộ):** Không cần kết nối mạng, đảm bảo bảo mật dữ liệu.
-- **Tự quyết định Ngôn ngữ phần mềm:** dựa vào việc máy có `Cốc Cốc` hoặc `Zalỏ` hay không.
-- **Hỗ trợ GPU (hoặc CPU):** Tự động phát hiện và sử dụng GPU để tăng tốc, tự động chuyển sang CPU nếu không thể sử dụng GPU (CPU sẽ chậm hơn nhiều).
-- **Hỗ trợ nhiều định dạng file:** Ảnh `.png`, `.jpg`, `.webp` và Tài liệu `.pdf`.
+- **Chạy offline (nội bộ):** **Không cần kết nối mạng, cũng chả liên lạc đi đâu**, đảm bảo bảo mật dữ liệu tuyệt đối.
+- **Hỗ trợ GPU (và CPU):** Tự động phát hiện và sử dụng GPU để tăng tốc, nếu không thể sử dụng GPU thì tự động chuyển sang CPU (CPU sẽ chậm hơn nhiều).
+- **Hỗ trợ đa ngôn ngữ:** Tiếng Việt, Tiếng Anh, Tiếng Trung, Tiếng Nhật, ...
+- **Hỗ trợ nhiều định dạng tệp:** Ảnh `.png`, `.jpg`, `.webp` và Tài liệu `.pdf`.
 - **Xử lý PDF thông minh:** Cho phép chọn phạm vi trang để xử lý (với các tệp PDF >=2 trang).
+- **Hệ thống Hàng chờ:** Cho phép xử lý lần lượt nhiều tệp.
+- **Kết quả đẹp:** Hỗ trợ hiển thị kết quả có định dạng thay vì văn bản thô, **cho phép giữ nguyên định dạng** để dán vào Word, ...
+- **Hình minh họa quá trình OCR:** Nhìn thấy AI đang đọc đến đoạn nào bằng cách nhìn hộp bao quanh. (khá ngầu).
 - **Có 3 chế độ xử lý:**
-  - **OCR Tiêu chuẩn:** Trích xuất văn bản, cố giữ bố cục gốc.
-  - **OCR không bố cục (Free OCR):** Trích xuất văn bản, không giữ bố cục (bố cục tự do).
-  - **Tài liệu Markdown (HTML nặng):** Trích xuất văn bản ra định dạng Markdown
-    - **Cảnh báo:** Chế độ này có thể tạo ra rất nhiều tag HTML tùy vào tài liệu được cho
-    - *Mẹo:* Hãy sử dụng AI khác để dọn dẹp kết quả.
-- **Hệ thống Hàng chờ:** Cho phép xử lý lần lượt nhiều file (không nên dùng quá 15 file cùng lúc vì có thể sẽ bị kẹt trong vòng lập vô tận)
-- **Tự động xả Model AI để giải phóng bộ nhớ:** Sau khi `Bắt đầu xử lý` lần đầu thì Model AI sẽ được nạp vào bộ nhớ, đợi 5 phút sau khi hoàn thành thì bộ nhớ sẽ tự được giải phóng.
+  - **Tài liệu Markdown (giữ định dạng):** Trích xuất văn bản, cố gắng giữ bố cục (Table, ...)
+  - **OCR Tiêu chuẩn:** Trích xuất văn bản, giữ bố cục không tốt.
+  - **OCR Tự do (Free OCR):** Trích xuất văn bản, đôi lúc lại giữ bố cục tốt hơn "`OCR Tiêu chuẩn`".
+- **Giao diện tự động phát hiện Ngôn ngữ:** dựa vào việc máy có `Cốc Cốc` hoặc `Zalỏ` hay không.
+- **Tự động xả Model AI để giải phóng bộ nhớ:** Sau khi "`Bắt đầu xử lý`" lần đầu thì Model AI sẽ được nạp vào bộ nhớ, sau khi hoàn thành đợi 5 phút thì bộ nhớ sẽ tự được giải phóng (Hoặc nhấn nút "`Xả Model AI` để giải phóng bộ nhớ ngay).
 
-## Yêu cầu hệ thống
+## Yêu cầu hệ thống (khuyến nghị)
+
+- **Lưu ý:** Bạn vẫn có thể chạy phần mềm này mặc dù không đạt yêu cầu hệ thống (**thậm chí không GPU vẫn chạy được**), nhưng tốc độ sẽ chậm hơn nhiều.
 
 - **OS:** Windows 10 trở lên
 - **CPU:** Tối thiểu 4 lõi/8 luồng
 - **RAM:** Tối thiểu 16GB
-- **Dung lượng trống:** Khoảng 12GB
+- **Dung lượng trống:** Khoảng 11GB
 - **GPU:** Có GPU (nên dùng Nvidia), với tối thiểu 8GB VRAM
-  - **Lưu ý:** Nếu không có GPU đạt yêu cầu thì phần mềm sẽ sử dụng CPU (chậm hơn nhiều)
+  - **Lưu ý:** Phần mềm sẽ cố dùng GPU, thậm chí khi dung lượng VRAM không đạt yêu cầu để tăng tốc phần mềm.
 
 ## Tải về và thiết lập
 
@@ -46,19 +53,20 @@ Một phần mềm OCR offline (sau khi thiết lập lần đầu), portable, c
 ## Hướng dẫn sử dụng
 
 1. **Khởi động phần mềm:**
-   - Chạy file `run.bat` để khởi động ứng dụng (sử dụng GPU nếu có thể).
+   - Chạy file `run.bat` để khởi động phần mềm (sử dụng GPU nếu có thể).
    - Nếu bạn muốn ép phần mềm chạy bằng CPU, hãy dùng `run_cpu-only.bat`.
 
 2. **Sử dụng phần mềm:**
    - **2a. Quản lý tệp tin:**
-      + Thêm ảnh/Thêm PDF: Chọn tài liệu cần xử lý để thêm vào Hàng chờ xử lý.
-      + Xóa sạch Hàng chờ: Xóa sạch danh sách Hàng chờ xử lý.
-   - **2b. Cài đặt (nên giữ mặc định):** Chọn giữa 3 chế độ OCR, mặc định (OCR Tiêu chuẩn) là tốt nhất.
-   - **2c. Bắt đầu OCR:** Nhấn nút "Bắt đầu xử lý" để AI bắt đầu OCR.
-   - **2d. Kết quả:** Văn bản sau khi được xử lý sẽ hiển thị nội dung ở khung bên phải.
-   - **2e. Sao chép kết quả:** Nhấn nút này để sao chép nội dung trong ô Kết quả, bạn có thể dán vào Word hoặc phần mềm khác.
+      + Thêm ảnh/Thêm PDF: Chọn trang tài liệu cần xử lý để thêm vào `Hàng chờ xử lý`.
+      + Xóa sạch Hàng chờ: Xóa sạch danh sách `Hàng chờ xử lý`.
+   - **2b. Chọn chế độ (nên giữ mặc định):** Chọn giữa 3 chế độ OCR, mặc định là tốt nhất.
+      - **Lưu ý:** Nếu chế độ mặc định không in ra gì cả (hình bạn đưa quá phức tạp), thì hãy thử chọn "`OCR Tiêu chuẩn`".
+   - **2c. Bắt đầu OCR:** Nhấn nút "`Bắt đầu xử lý`" để bắt đầu OCR.
+   - **2d. Kết quả:** Văn bản sau khi được xử lý sẽ hiển thị nội dung ở khung bên phải, bạn nên nhìn bên "`Kết quả đẹp`" (phần mềm sẽ tự chuyển qua Thẻ đó khi OCR kết thúc).
+   - **2e. Sao chép kết quả:** Nhấn nút này để sao chép nội dung trong ô "`Kết quả`", Nếu bạn đang ở Thẻ "`Kết quả đẹp`" thì định dạng sẽ được giữ nguyên, bạn có thể dán vào Word hoặc phần mềm khác.
 
-- *Mẹo*: Nút "`Unload Model AI`" giúp giải phóng RAM/VRAM khi bạn không sử dụng OCR nữa mà chưa muốn tắt ứng dụng.
+- *Mẹo*: Nhấn nút "`Xả Model AI`" giúp giải phóng RAM/VRAM khi bạn không có ý định tiếp tục sử dụng OCR, nhưng lại chưa muốn tắt phần mềm.
 
 ## Xử lý vấn đề
 

@@ -1,0 +1,49 @@
+{
+    "btn_about": "About",
+    "about_title": "About Program",
+    "about_text": "<center><img src='{}' width='64' height='64'><br><b>Local AI OCR</b></center><b>Version:</b> {}<br><b>Author:</b> {}",
+    "btn_about_git": "GitHub",
+    "btn_unload": "Unload AI Model",
+
+    "btn_add_img": "Add Images",
+    "btn_add_pdf": "Add PDF",
+    "btn_clear": "Clear Queue",
+    "lbl_queue": "Processing Queue:",
+
+    "group_settings": "Settings",
+    "lbl_prompt": "Select Mode:",
+    "prompt_labels": {
+        "p_markdown": "Markdown Document (keep formatting)",
+        "p_ocr": "Standard OCR",
+        "p_freeocr": "Free OCR"
+    },
+
+    "btn_run_ready": "Start Processing ({})",
+    "btn_run": "Start Processing",
+    "btn_stop": "STOP",
+
+    "tab_raw": "Raw Output",
+    "tab_fancy": "Fancy Output",
+    "lbl_proofread": "Please proofread the output, especially when there are important information.",
+    "btn_copy": "Copy \"{}\"",
+
+    "title_info": "Info",
+    "title_done": "Done",
+    "title_error": "Error",
+    "title_disclaimer": "Disclaimer",
+
+    "msg_started": "Processing: {}",
+    "msg_stopped": "Stopped by user.",
+    "msg_elapsed": "{}: Done in {:.2f}s",
+    "msg_done": "Processing complete.",
+    "msg_total": "Total Time: {:.2f}s",
+    "msg_model_unloaded": "AI Model unloaded from memory.",
+    "msg_model_not_loaded": "AI Model is not currently loaded.",
+    "msg_loop_disclaimer": "<b>Disclaimer:</b> Due to technical limitations, the OCR AI <b>might get stuck</b> in an infinite loop.<br>If that happens please press <b>STOP</b>.",
+
+    "dlg_page_range_title": "Select Page Range",
+    "dlg_page_range_msg": "File: {}<br>Total Pages: {}<br><br>Select pages to import:",
+    "dlg_page_range_start": "Start Page:",
+    "dlg_page_range_end": "End Page:",
+    "dlg_page_range_error": "<b>Error:</b> Start page cannot be greater than End page."
+}

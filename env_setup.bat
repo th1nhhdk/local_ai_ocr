@@ -16,12 +16,9 @@ set "PTH_FILE=%PYTHON_DIR%\python313._pth"
 
 set "OLLAMA_DIR=%SCRIPTROOT%ollama"
 
-set "OLLAMA_SETUP_EXE=OllamaSetup.exe"
-set "OLLAMA_DOWNLOAD_URL=https://ollama.com/download/OllamaSetup.exe"
-set "OLLAMA_LNK_STARTUP=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Ollama.lnk"
-set "OLLAMA_LNK_MENU=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Ollama\Ollama.lnk"
-set "OLLAMA_BAK_STARTUP=%TEMP%\Ollama_Startup_Backup.lnk"
-set "OLLAMA_BAK_MENU=%TEMP%\Ollama_Menu_Backup.lnk"
+set "OLLAMA_ZIP=ollama-windows-amd64.zip"
+set "OLLAMA_DOWNLOAD_URL=https://ollama.com/download/ollama-windows-amd64.zip"
+set "OLLAMA_CHECKSUM_URL=https://ollama.com/download/sha256sum.txt"
 
 set "OLLAMA_BIN=%OLLAMA_DIR%\ollama.exe"
 set "OLLAMA_HOST=http://127.0.0.1:11435"
@@ -109,61 +106,60 @@ echo [5/6] Downloading Ollama...
 if exist "%OLLAMA_BIN%" (
     echo - Ollama found in %OLLAMA_DIR%. Skipping download.
 ) else (
-    echo - Downloading %OLLAMA_SETUP_EXE%, this will take a while...
-
-    :: Clean up partial downloads before starting fresh download
-    if exist "%OLLAMA_SETUP_EXE%" (
-        echo - Found leftover %OLLAMA_SETUP_EXE%. Deleting to ensure fresh download...
-        del "%OLLAMA_SETUP_EXE%"
-    )
-
-    "%WGET%" -q --show-progress -O "%OLLAMA_SETUP_EXE%" "%OLLAMA_DOWNLOAD_URL%"
+    :: Download checksum file
+    echo - Downloading checksums...
+    "%WGET%" -q --show-progress -O sha256sum.txt "%OLLAMA_CHECKSUM_URL%"
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
-    :: Backup Startup Shortcut if it exists
-    if exist "%OLLAMA_LNK_STARTUP%" (
-        echo - Backing up existing Ollama Startup shortcut...
-        copy /Y "%OLLAMA_LNK_STARTUP%" "%OLLAMA_BAK_STARTUP%" >nul
+    :: Extract expected hash
+    set "EXPECTED_HASH="
+    for /f "tokens=1" %%h in ('findstr "%OLLAMA_ZIP%" sha256sum.txt') do set "EXPECTED_HASH=%%h"
+    
+    :: Verify existing zip if present
+    if exist "%OLLAMA_ZIP%" (
+        if defined EXPECTED_HASH (
+            echo - Found %OLLAMA_ZIP%. Verifying checksum...
+            set "FILE_HASH="
+            for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
+
+            if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
+                echo - Checksum mismatch. Deleting corrupt file...
+                del "%OLLAMA_ZIP%"
+            ) else (
+                echo - Checksum verified.
+            )
+        )
     )
 
-    :: Backup Start Menu Shortcut if it exists
-    if exist "%OLLAMA_LNK_MENU%" (
-        echo - Backing up existing Ollama Start Menu shortcut...
-        copy /Y "%OLLAMA_LNK_MENU%" "%OLLAMA_BAK_MENU%" >nul
+    :: Download if missing
+    if not exist "%OLLAMA_ZIP%" (
+        echo - Downloading %OLLAMA_ZIP%...
+        "%WGET%" -q --show-progress -O "%OLLAMA_ZIP%" "%OLLAMA_DOWNLOAD_URL%"
+        if !errorlevel! neq 0 goto :ERROR_NETWORK
+
+        :: Verify downloaded file
+        if defined EXPECTED_HASH (
+            set "FILE_HASH="
+            for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
+            if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
+                echo [ERROR] Downloaded file checksum mismatch!
+                del "%OLLAMA_ZIP%"
+                goto :ERROR_NETWORK
+            )
+        )
     )
 
-    echo - Installing Ollama to: "%OLLAMA_DIR%"
-    start /wait "" "%OLLAMA_SETUP_EXE%" /DIR="%OLLAMA_DIR%" /VERYSILENT /SUPPRESSMSGBOXES /NOICONS /TASKS=""
+    :: Cleanup checksum file
+    if exist "sha256sum.txt" del "sha256sum.txt"
 
+    echo - Extracting to %OLLAMA_DIR%...
+    powershell -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%OLLAMA_ZIP%' -DestinationPath '%OLLAMA_DIR%' -Force"
+    if !errorlevel! neq 0 goto :ERROR_OLLAMA_INSTALL
+
+    :: Clean up zip
+    del "%OLLAMA_ZIP%"
+    
     if not exist "%OLLAMA_BIN%" goto :ERROR_OLLAMA_INSTALL
-
-    del "%OLLAMA_SETUP_EXE%"
-
-    echo - Sanitizing Ollama installation...
-    :: Stop the auto-started process
-    taskkill /F /IM "ollama app.exe" >nul 2>&1
-    taskkill /F /IM "ollama.exe" >nul 2>&1
-
-    :: Remove from Windows Startup
-    if exist "%OLLAMA_LNK_STARTUP%" del "%OLLAMA_LNK_STARTUP%"
-
-    :: Restore original Ollama Startup shortcut if it existed
-    if exist "%OLLAMA_BAK_STARTUP%" (
-        echo - Restoring original Ollama Startup shortcut...
-        move /Y "%OLLAMA_BAK_STARTUP%" "%OLLAMA_LNK_STARTUP%" >nul
-    )
-
-    :: Remove the Start Menu Shortcut
-    if exist "%OLLAMA_LNK_MENU%" del "%OLLAMA_LNK_MENU%"
-
-    :: Restore original Ollama Start Menu shortcut if it existed
-    if exist "%OLLAMA_BAK_MENU%" (
-        echo - Restoring original Ollama Start Menu shortcut...
-        move /Y "%OLLAMA_BAK_MENU%" "%OLLAMA_LNK_MENU%" >nul
-    )
-
-    :: Clean User PATH (Remove Ollama from environment variables)
-    powershell -Command "$target='%OLLAMA_DIR%'; $key = 'HKCU:\Environment'; $p = (Get-ItemProperty -Path $key -Name PATH).PATH; $parts = $p -split ';'; $new = ($parts | Where-Object { $_ -ne $target }) -join ';'; Set-ItemProperty -Path $key -Name PATH -Value $new"
 )
 
 :: ============================================================

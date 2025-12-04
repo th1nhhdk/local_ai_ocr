@@ -1,10 +1,12 @@
+/bin/.wget-hsts
 /models/
 /ollama/
 /python/
-/src/__pycache__/
+__pycache__/
 /test/
-/bin/.wget-hsts
-/OllamaSetup.exe
 /python.zip
 /get-pip.py
+/ollama-windows-amd64.zip
+/sha256sum.txt
 /TODO
+/.vscode/
