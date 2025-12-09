@@ -17,18 +17,12 @@ Image.MAX_IMAGE_PIXELS = None
 # Ollama already handled the image padding
 # See: https://github.com/ollama/ollama/blob/main/model/models/deepseekocr/imageprocessor.go
 def preprocess_image(img: Image.Image) -> bytes:
-    # Apply standard preprocessing (transparency handling) and return PNG bytes.
+    # Apply standard preprocessing and return PNG bytes.
     # We DO NOT resize or pad here because Ollama needs the original
     # high-resolution image to perform its own multi-view cropping.
 
-    # Flatten transparent alpha channel onto white background
-    if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
-        img = img.convert('RGBA')
-        background = Image.new('RGB', img.size, (255, 255, 255))
-        # img.split()[-1] extracts the alpha channel as a mask
-        background.paste(img, mask=img.split()[-1])
-        img = background
-    elif img.mode != 'RGB':
+    # Ensure RGB format (matches Ollama/vLLM implementation)
+    if img.mode != 'RGB':
         img = img.convert('RGB')
 
     # Export as PNG bytes (lossless format preserves text quality)
