@@ -1,8 +1,8 @@
 # src/main.py
-pyside6==6.10.1
+PySide6==6.10.1
 
 ollama==0.6.1
 pillow==12.0.0
 pillow-heif==1.1.1
-pymupdf==1.26.6
-markdown==3.10
+PyMuPDF==1.26.7
+Markdown==3.10

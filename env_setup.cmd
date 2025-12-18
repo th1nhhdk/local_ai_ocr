@@ -18,7 +18,7 @@ set "PYTHON_BIN=%PYTHON_DIR%\python.exe"
 set "PYTHON_PTH=%PYTHON_DIR%\python313._pth"
 
 set "OLLAMA_DIR=%SCRIPTROOT%ollama"
-set "OLLAMA_VER=v0.13.2"
+set "OLLAMA_VER=v0.13.4"
 set "OLLAMA_ZIP=ollama-windows-amd64.zip"
 set "OLLAMA_DOWNLOAD_URL=https://github.com/ollama/ollama/releases/download/%OLLAMA_VER%/%OLLAMA_ZIP%"
 set "OLLAMA_CHECKSUM_URL=https://github.com/ollama/ollama/releases/download/%OLLAMA_VER%/sha256sum.txt"
