@@ -132,6 +132,18 @@ QPushButton:disabled {
     border-color: #4C566A;
 }
 
+/* --- Drop Overlay --- */
+#drop_overlay {
+    background-color: rgba(46, 52, 64, 0.9);
+    border: 3px dashed #88C0D0;
+}
+
+#drop_overlay QLabel {
+    color: #ECEFF4;
+    font-size: 28px;
+    font-weight: bold;
+}
+
 /* --- Inputs & Lists --- */
 QTextEdit,
 QListWidget {

@@ -48,6 +48,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 - Due to technical limitations, the AI OCR **may get stuck** in an infinite loop. If that happens, press **STOP**.
 - Although `DeepSeek-OCR` has extremely high accuracy, you **should still verify the results**, especially for important documents.
 - The first run always takes some time to load the AI Model into memory.
+- Dragging and dropping files may not preserve the file order, this is a software limitation and there is currently no way to fix it.
 
 ## Usage Guide
 

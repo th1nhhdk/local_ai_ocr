@@ -49,6 +49,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 - Vì giới hạn kỹ thuật, AI OCR **có thể bị kẹt** trong vòng lặp vô hạn. Nếu chuyện đó xảy ra, hãy nhấn **DỪNG LẠI**.
 - Mặc dù `DeepSeek-OCR` có độ chính xác cực cao, bạn **vẫn nên kiểm tra lại kết quả**, đặc biệt với tài liệu quan trọng.
 - Lần chạy đầu tiên luôn tốn một chút thời gian để load AI Model vào bộ nhớ.
+- Việc kéo và thả các tệp tin có thể sẽ không giữ lại thứ tự tệp, đây là giới hạn phần mềm và hiện không có cách khắc phục.
 
 ## Hướng dẫn sử dụng
 

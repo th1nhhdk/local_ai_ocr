@@ -163,8 +163,14 @@ class ControlPanel(QWidget):
 
     # ==================== Top Row: Add Images (Left) ====================
     def add_images(self):
-        files, _ = QFileDialog.getOpenFileNames(self, self.t["btn_add_img"], "", "Images (*.png *.jpg *.webp *.heic *.heif)")
-        for f in files:
+        # Build filter from config
+        ext_filter = "Images (" + " ".join(f"*{ext}" for ext in config.IMAGE_EXTENSIONS) + ")"
+        files, _ = QFileDialog.getOpenFileNames(self, self.t["btn_add_img"], "", ext_filter)
+        self.add_image_files(files)
+
+    def add_image_files(self, filepaths):
+        # Add image files to queue programmatically (used by dialog and drag/drop).
+        for f in filepaths:
             name = os.path.basename(f)
             self.image_queue.append((name, f, -1))  # -1 = not a PDF page
             self.list_widget.addItem(name)
@@ -178,7 +184,11 @@ class ControlPanel(QWidget):
     # ==================== Top Row: Add PDF (Middle) ====================
     def add_pdf(self):
         files, _ = QFileDialog.getOpenFileNames(self, self.t["btn_add_pdf"], "", "PDF Files (*.pdf)")
-        for f in files:
+        self.add_pdf_files(files)
+
+    def add_pdf_files(self, filepaths):
+        # Add PDF files to queue programmatically (used by dialog and drag/drop).
+        for f in filepaths:
             try:
                 count = file_handler.get_pdf_page_count(f)
                 base_name = os.path.basename(f)

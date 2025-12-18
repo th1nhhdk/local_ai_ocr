@@ -6,7 +6,7 @@ import os
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QPushButton, QLabel, QSplitter, QComboBox,
                                QMessageBox, QDialog, QDialogButtonBox, QLayout,
-                               QGroupBox, QCheckBox)
+                               QGroupBox, QCheckBox, QFrame)
 from PySide6.QtCore import Qt, Slot, QUrl, QTimer
 from PySide6.QtGui import QDesktopServices, QIcon
 
@@ -66,6 +66,9 @@ class MainWindow(QMainWindow):
 
     # ==================== UI Layout ====================
     def init_ui(self):
+        # Enable drag and drop on the main window
+        self.setAcceptDrops(True)
+
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         main_layout = QVBoxLayout(main_widget)
@@ -128,6 +131,17 @@ class MainWindow(QMainWindow):
         splitter.addWidget(self.control_panel)
         splitter.addWidget(self.output_panel)
         splitter.setSizes([267, 800])
+
+        # === Drop Overlay (hidden by default) ===
+        self.drop_overlay = QFrame(self)
+        self.drop_overlay.setObjectName("drop_overlay")
+        self.drop_overlay.hide()
+
+        overlay_layout = QVBoxLayout(self.drop_overlay)
+        overlay_layout.setAlignment(Qt.AlignCenter)
+        self.drop_overlay_label = QLabel()
+        self.drop_overlay_label.setAlignment(Qt.AlignCenter)
+        overlay_layout.addWidget(self.drop_overlay_label)
 
     # ==================== Top Bar: About (Left) ====================
     def show_about(self):
@@ -215,6 +229,9 @@ class MainWindow(QMainWindow):
         # Update child panels
         self.control_panel.update_language(self.t)
         self.output_panel.update_language(self.t)
+
+        # Drop overlay
+        self.drop_overlay_label.setText(self.t["drop_overlay_text"])
 
     # ==================== Processing State ====================
     def set_processing_state(self, is_processing):
@@ -308,3 +325,98 @@ class MainWindow(QMainWindow):
             total_duration = time.time() - self.batch_start_time
             total_str = self.t["msg_total"].format(total_duration)
             QMessageBox.information(self, self.t["title_done"], f"{self.t['msg_done']}\n{total_str}")
+
+    # ==================== Drag and Drop ====================
+    def resizeEvent(self, event):
+        # Keep drop overlay sized to cover entire window.
+        super().resizeEvent(event)
+        if hasattr(self, 'drop_overlay'):
+            self.drop_overlay.setGeometry(self.rect())
+
+    def _validate_dropped_files(self, urls):
+        # Separate dropped files into images, PDFs, and invalid files.
+        images, pdfs, invalid = [], [], []
+        for url in urls:
+            if url.isLocalFile():
+                path = url.toLocalFile()
+                ext = os.path.splitext(path)[1].lower()
+                if ext in config.IMAGE_EXTENSIONS:
+                    images.append(path)
+                elif ext == '.pdf':
+                    pdfs.append(path)
+                else:
+                    invalid.append(path)
+        return images, pdfs, invalid
+
+    def dragEnterEvent(self, event):
+        # Accept drag if we're not processing and files contain valid types.
+        if self.control_panel.btn_stop.isEnabled():
+            event.ignore()
+            return
+
+        if event.mimeData().hasUrls():
+            images, pdfs, _ = self._validate_dropped_files(event.mimeData().urls())
+            if images or pdfs:
+                event.acceptProposedAction()
+                self.drop_overlay.setGeometry(self.rect())
+                self.drop_overlay.show()
+                self.drop_overlay.raise_()
+                return
+
+        event.ignore()
+
+    def dragMoveEvent(self, event):
+        # Keep accepting the drag while over the window.
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dragLeaveEvent(self, event):
+        # Hide overlay when drag leaves the window.
+        self.drop_overlay.hide()
+
+    def dropEvent(self, event):
+        # Process dropped files and hide overlay.
+        self.drop_overlay.hide()
+
+        if not event.mimeData().hasUrls():
+            return
+
+        # Process files in order, batching consecutive images for efficiency
+        invalid = []
+        image_batch = []
+        file_count = 0
+
+        for url in event.mimeData().urls():
+            if not url.isLocalFile():
+                continue
+
+            path = url.toLocalFile()
+            ext = os.path.splitext(path)[1].lower()
+
+            if ext in config.IMAGE_EXTENSIONS:
+                image_batch.append(path)
+                file_count += 1
+            elif ext == '.pdf':
+                # Flush pending images first to preserve order
+                if image_batch:
+                    self.control_panel.add_image_files(image_batch)
+                    image_batch = []
+                # Process PDF (may show dialog)
+                self.control_panel.add_pdf_files([path])
+                file_count += 1
+            else:
+                invalid.append(path)
+
+        # Flush remaining images
+        if image_batch:
+            self.control_panel.add_image_files(image_batch)
+
+        # Warn about invalid files
+        if invalid:
+            QMessageBox.warning(self, self.t["title_disclaimer"], self.t["drop_invalid_files"])
+
+        # Show file order disclaimer ONLY when > 1 files dropped
+        if file_count > 1:
+            QMessageBox.information(self, self.t["title_disclaimer"], self.t["drop_order_disclaimer"])
+
+        event.acceptProposedAction()

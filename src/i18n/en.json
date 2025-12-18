@@ -8,6 +8,11 @@
     "btn_add_img": "Add Images",
     "btn_add_pdf": "Add PDF",
     "btn_clear": "Clear Queue",
+
+    "drop_overlay_text": "Drop files here",
+    "drop_invalid_files": "Some dragged and dropped files were ignored (unsupported format)",
+    "drop_order_disclaimer": "The order of dragged and dropped files may not be correct (due to software limitation). <br>Please check the file ordering in the Processing Queue.",
+
     "lbl_queue": "Processing Queue:",
 
     "group_settings": "Settings",

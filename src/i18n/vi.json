@@ -8,6 +8,11 @@
     "btn_add_img": "Thêm ảnh",
     "btn_add_pdf": "Thêm PDF",
     "btn_clear": "Xóa Hàng chờ",
+
+    "drop_overlay_text": "Thả tệp tin ở đây",
+    "drop_invalid_files": "Một số tệp được kéo và thả đã bị bỏ qua (định dạng không hỗ trợ)",
+    "drop_order_disclaimer": "Thứ tự của các tệp sau khi kéo và thả có thể bị mất (do giới hạn phần mềm). <br>Vui lòng kiểm tra lại thứ tự tệp tin trong Hàng chờ xử lý.",
+
     "lbl_queue": "Hàng chờ xử lý:",
 
     "group_settings": "Cài đặt",
