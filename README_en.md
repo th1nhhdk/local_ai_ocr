@@ -4,9 +4,11 @@
 [English](README_en.md) |
 [Tiếng Việt](README.md)
 
-# Local AI OCR (v2.1.1)
+# Local AI OCR (v2.2)
 
 An **local**, **offline** (after initial setup), **portable** OCR software that can process images and PDF files, using *DeepSeek-OCR* AI (running directly on your machine).
+
+![screenshot_v2.2](assets/screenshot_v2.2_en.png)
 
 ## Features
 

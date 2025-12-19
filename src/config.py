@@ -3,7 +3,7 @@ import sys
 import os
 import tomllib
 
-APP_VERSION = "v2.1.1"
+APP_VERSION = "v2.2"
 APP_AUTHOR = "Nguyễn Phước Thịnh"
 PROJECT_URL = "https://github.com/th1nhhdk/local_ai_ocr"
 
