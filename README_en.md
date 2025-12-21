@@ -73,6 +73,13 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 
 ## Troubleshooting
 
+- This program uses CPU and RAM, but not my Nvidia GPU:
+   + Check `Nvidia Control Panel` and see what Driver version are you using? You must have `531` or newer for the program to ultilize the GPU.
+   + Visit [Nvidia's Website](https://www.nvidia.com/en-us/geforce/drivers/) to download newer drivers.
+
+- `env_setup.bat` fails at `[1/6]`:
+   + Are you using Windows 10/11 21H2? try to upgrade to at least 22H2 and see if it works.
+
 - If you encounter GPU-related errors, use `run_wlog.cmd` to view error logs, or use `run_cpu-only.cmd` so the software won't use the GPU.
 
 - "`Markdown Document (keep formatting)`" doesn't output anything: try using "`Free OCR`" mode.

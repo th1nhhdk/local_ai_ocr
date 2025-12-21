@@ -74,5 +74,12 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 
 ## Xử lý vấn đề
 
+- Phần mềm dùng CPU và RAM, nhưng lại không đụng vào GPU Nvidia:
+   + Bạn bật `Nvidia Control Panel` lên xem Driver đang dùng là bản bao nhiêu? Phải bản `531` hoặc mới hơn mới sử dụng được.
+   + Bạn qua [Website của Nvidia](https://www.nvidia.com/en-us/geforce/drivers/) để tải Driver mới hơn nha.
+
+- `env_setup.bat` lỗi ở bước `[1/6]`:
+   + Bạn đang dùng Windows 10/11 21H2 à? thử năng cấp lên ít nhất 22H2 xem?
+
 - Nếu bạn gặp lỗi liên quan đến GPU, hãy dùng `run_wlog.cmd` để xem log lỗi, hoặc dùng `run_cpu-only.cmd` để phần mềm không sử dụng GPU.
 - Chế độ "`Tài liệu Markdown (giữ định dạng)`" không in ra gì cả: Hãy thử chế độ "`OCR Tự do (Free OCR)`".
