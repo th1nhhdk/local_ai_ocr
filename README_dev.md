@@ -1,6 +1,6 @@
 <img src='src/res/icon.png' width='128' height='128'>
 
-# Local AI OCR (v2.2)
+# Local AI OCR (v2.2.1)
 
 ## Tech Stack
 - **wget2:** `2.2.0`

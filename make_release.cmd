@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-set VERSION=v2.2
+set VERSION=v2.2.1
 set ARCHIVE_NAME=local_ai_ocr-%VERSION%.zip
 set ZIP=7z.exe
 
@@ -19,7 +19,7 @@ if exist "%ARCHIVE_NAME%" (
 echo Creating %ARCHIVE_NAME%...
 
 %ZIP% a -tzip "%ARCHIVE_NAME%" ^
-    "bin\wget2.exe" ^
+    "bin\wget.exe" ^
     "demo\" ^
     "src\" ^
     ".gitignore" ^
