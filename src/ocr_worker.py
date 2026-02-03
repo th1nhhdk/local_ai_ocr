@@ -73,6 +73,9 @@ class OCRWorker(QThread):
                     if page_index == -1:
                         # Regular image file
                         img_bytes = file_handler.get_image_bytes(filepath)
+                    elif page_index == -2: 
+                        # Clipboard image, (filepath is actually the image bytes) no need to convert
+                        img_bytes = filepath
                     else:
                         # PDF page (page_index is 0-based)
                         img_bytes = file_handler.extract_pdf_page_bytes(filepath, page_index)
