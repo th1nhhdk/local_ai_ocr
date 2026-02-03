@@ -48,14 +48,17 @@ class ControlPanel(QWidget):
         btn_layout = QHBoxLayout()
         self.btn_add_img = QPushButton()
         self.btn_add_pdf = QPushButton()
+        self.btn_paste_clipboard = QPushButton()
         self.btn_clear = QPushButton()
 
         self.btn_add_img.clicked.connect(self.add_images)
         self.btn_add_pdf.clicked.connect(self.add_pdf)
+        self.btn_paste_clipboard.clicked.connect(self.paste_image_from_clipboard)
         self.btn_clear.clicked.connect(self.clear_queue)
 
         btn_layout.addWidget(self.btn_add_img)
         btn_layout.addWidget(self.btn_add_pdf)
+        btn_layout.addWidget(self.btn_paste_clipboard)
         btn_layout.addWidget(self.btn_clear)
         self.layout.addLayout(btn_layout)
 
@@ -131,6 +134,7 @@ class ControlPanel(QWidget):
         self.t = t
         self.btn_add_img.setText(t["btn_add_img"])
         self.btn_add_pdf.setText(t["btn_add_pdf"])
+        self.btn_paste_clipboard.setText(t.get("btn_paste_clipboard", "Paste Clipboard"))
         self.btn_clear.setText(t["btn_clear"])
         self.btn_stop.setText(t["btn_stop"])
         self.lbl_queue.setText(t["lbl_queue"])
@@ -180,6 +184,42 @@ class ControlPanel(QWidget):
             self.list_widget.setCurrentRow(0)
 
         self.update_status()
+
+    # ==================== Top Row: Paste Image from Clipboard Button (Left) ====================
+    def paste_image_from_clipboard(self):
+        from PySide6.QtGui import QClipboard, QImage
+        from PySide6.QtCore import QBuffer, QIODevice, QMimeData
+        from PySide6.QtWidgets import QApplication, QMessageBox
+
+        clipboard = QApplication.clipboard()
+        mime_data = clipboard.mimeData()
+
+        if mime_data.hasImage():
+            image = clipboard.image()
+            if not image.isNull():
+                # Generate a unique name for the clipboard image
+                name = f"Clipboard Image {len(self.image_queue) + 1}"
+                # Convert QImage to bytes using QBuffer
+                buffer = QBuffer()
+                buffer.open(QIODevice.WriteOnly)
+                image.save(buffer, "PNG")  # Save to buffer in PNG format
+                img_bytes = bytes(buffer.data()) # Get bytes (convert QByteArray to default python bytes)
+
+                # Store the bytes directly in the queue, with a dummy path and a flag
+                self.image_queue.append((name, img_bytes, -2))  # -2 = clipboard image
+                self.list_widget.addItem(name)
+
+                # Auto-select the new item
+                self.list_widget.setCurrentRow(self.list_widget.count() - 1)
+
+                # Display the image
+                self.image_viewer.display_image(img_bytes)
+
+                self.update_status()
+            else:
+                QMessageBox.warning(self, "Error", "Could not read image from clipboard.")
+        else:
+            QMessageBox.warning(self, "Error", "No image in clipboard.")
 
     # ==================== Top Row: Add PDF (Middle) ====================
     def add_pdf(self):
@@ -268,15 +308,20 @@ class ControlPanel(QWidget):
         row = self.list_widget.row(current)
         if row < 0 or row >= len(self.image_queue): return
 
-        name, path, page_index = self.image_queue[row]
+        name, data, page_index = self.image_queue[row]
 
         if self.loader_thread is not None and self.loader_thread.isRunning():
              self.loader_thread.cancel()
 
-        self.loader_thread = ImageLoaderThread(path, page_index)
-        self.loader_thread.image_loaded.connect(lambda b: self.on_image_loaded(b, row))
-        self.loader_thread.error_occurred.connect(lambda e: print(f"Error loading image: {e}"))
-        self.loader_thread.start()
+        if page_index == -2:
+            # This is a clipboard image, data is already bytes
+            self.image_viewer.display_image(data)
+        else:
+            # This is a file, load as before
+            self.loader_thread = ImageLoaderThread(data, page_index)
+            self.loader_thread.image_loaded.connect(lambda b: self.on_image_loaded(b, row))
+            self.loader_thread.error_occurred.connect(lambda e: print(f"Error loading image: {e}"))
+            self.loader_thread.start()
 
     def on_image_loaded(self, img_bytes, row):
         # Callback when background image load completes.
@@ -301,6 +346,7 @@ class ControlPanel(QWidget):
         self.progress_bar.setMaximum(len(self.image_queue))
         self.progress_bar.setValue(0)
 
+        # Emit the queue, but for clipboard images, emit the bytes directly
         self.start_requested.emit(self.image_queue)
 
     # ==================== Stop Button (Right) ====================
