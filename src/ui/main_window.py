@@ -7,7 +7,7 @@ import sys
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QPushButton, QLabel, QSplitter, QComboBox,
                                QMessageBox, QDialog, QDialogButtonBox, QLayout,
-                               QGroupBox, QCheckBox, QFrame)
+                               QGroupBox, QCheckBox, QFrame, QApplication)
 from PySide6.QtCore import Qt, Slot, QUrl, QTimer
 from PySide6.QtGui import QDesktopServices, QIcon
 
@@ -420,19 +420,13 @@ class MainWindow(QMainWindow):
         # Hide overlay when drag leaves the window.
         self.drop_overlay.hide()
 
-    def dropEvent(self, event):
-        # Process dropped files and hide overlay.
-        self.drop_overlay.hide()
-
-        if not event.mimeData().hasUrls():
-            return
-
+    def _process_urls(self, urls):
         # Process files in order, batching consecutive images for efficiency
         invalid = []
         image_batch = []
         file_count = 0
 
-        for url in event.mimeData().urls():
+        for url in urls:
             if not url.isLocalFile():
                 continue
 
@@ -465,4 +459,41 @@ class MainWindow(QMainWindow):
         if file_count > 1:
             QMessageBox.information(self, self.t["title_disclaimer"], self.t["drop_order_disclaimer"])
 
+    def dropEvent(self, event):
+        # Process dropped files and hide overlay.
+        self.drop_overlay.hide()
+
+        if not event.mimeData().hasUrls():
+            return
+
+        self._process_urls(event.mimeData().urls())
         event.acceptProposedAction()
+
+    # ==================== Keyboard Shortcuts ====================
+    def keyPressEvent(self, event):
+        if event.modifiers() == Qt.ControlModifier and event.key() == Qt.Key_V:
+            self.paste_from_clipboard()
+        else:
+            super().keyPressEvent(event)
+
+    def paste_from_clipboard(self):
+        if self.control_panel.btn_stop.isEnabled():
+            return
+
+        clipboard = QApplication.clipboard()
+        mime_data = clipboard.mimeData()
+
+        if mime_data.hasUrls():
+            self._process_urls(mime_data.urls())
+        elif mime_data.hasImage():
+            image = clipboard.image()
+            if not image.isNull():
+                import tempfile
+                from datetime import datetime
+
+                temp_dir = tempfile.gettempdir()
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                temp_path = os.path.join(temp_dir, f"local_ai_ocr_clipboard_{timestamp}.png")
+
+                if image.save(temp_path, "PNG"):
+                    self.control_panel.add_image_files([temp_path])
