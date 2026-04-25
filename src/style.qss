@@ -12,7 +12,7 @@ QWidget {
     background-color: #2E3440;
     color: #D8DEE9;
     font-family: "Segoe UI", sans-serif;
-    font-size: 14px;
+    font-size: 10.5pt;
 }
 
 /* --- Context Menu --- */
@@ -140,7 +140,7 @@ QPushButton:disabled {
 
 #drop_overlay QLabel {
     color: #ECEFF4;
-    font-size: 28px;
+    font-size: 21pt;
     font-weight: bold;
 }
 
@@ -210,7 +210,7 @@ QLabel {
 
 #lbl_proofread {
     color: #ECEFF4;
-    font-size: 12px;
+    font-size: 9pt;
 }
 
 /* --- Tabs --- */
@@ -250,6 +250,6 @@ QTabBar::tab:disabled {
 
 /* --- Image Viewer Navigation Buttons --- */
 #btn_up, #btn_down {
-    font-size: 20px;
+    font-size: 15pt;
     font-weight: bold;
 }
