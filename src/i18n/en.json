@@ -46,7 +46,6 @@
     "title_error": "Error",
     "title_disclaimer": "Disclaimer",
 
-    "msg_stopped": "Stopped by user.",
     "msg_done": "Processing complete.",
     "msg_total": "Total Time: {:.2f}s",
     "msg_model_unloaded": "AI Model unloaded from memory.",

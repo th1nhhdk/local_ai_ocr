@@ -309,7 +309,6 @@ class MainWindow(QMainWindow):
     def stop_processing(self):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
-            self.output_panel.append_text(f"\n\n=== {self.t['msg_stopped']} ===")
             # Windows taskbar progress indicator
             if self.taskbar:
                 self.taskbar.stop_progress(int(self.winId()))

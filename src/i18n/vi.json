@@ -46,7 +46,6 @@
     "title_error": "Lỗi",
     "title_disclaimer": "Lưu ý",
 
-    "msg_stopped": "Đã được dừng lại bởi người dùng.",
     "msg_done": "Hoàn tất xử lý.",
     "msg_total": "Tổng thời gian: {:.2f}s",
     "msg_model_unloaded": "Đã giải phóng Model AI khỏi bộ nhớ.",
