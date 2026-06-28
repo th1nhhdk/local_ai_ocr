@@ -8,7 +8,7 @@ Tiếng Việt |
 
 Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần đầu), **portable**, có thể xử lý ảnh và tệp PDF, sử dụng AI *DeepSeek-OCR* (chạy nội bộ trực tiếp trên máy).
 
-![screenshot_v2.2](assets/screenshot_v2.2.png)
+![screenshot_v2.4](assets/screenshot_v2.4.png)
 
 ## Tính năng
 
@@ -18,7 +18,9 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 - **Hỗ trợ nhiều định dạng tệp:** Ảnh `.png`, `.jpg`, `.webp`, `.heic`, `.heif` và Tài liệu `.pdf`.
 - **Xử lý PDF thông minh:** Cho phép chọn phạm vi trang để xử lý (với các tệp PDF >=2 trang).
 - **Hệ thống Hàng chờ:** Cho phép xử lý lần lượt nhiều tệp.
+- **Tự động trích xuất Ảnh:** Tự động nhận diện và trích xuất các biểu đồ, hình ảnh... trong tài liệu để chèn trực tiếp vào kết quả.
 - **Kết quả đẹp:** Hỗ trợ hiển thị kết quả có định dạng thay vì văn bản thô, **cho phép giữ nguyên định dạng** để dán vào Word, ...
+- **Xuất ra Word:** Hỗ trợ xuất trực tiếp kết quả sang file `.docx` bên cạnh tùy chọn Sao chép vào Clipboard thông thường.
 - **Hình minh họa quá trình OCR:** Nhìn thấy AI đang đọc đến đoạn nào bằng cách nhìn hộp bao quanh. (khá ngầu).
 - **Có 3 chế độ xử lý:**
   - **Tài liệu Markdown (giữ định dạng):** Trích xuất văn bản, cố gắng giữ bố cục (Table, ...)
@@ -68,7 +70,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
    - *Mẹo:* Nếu bạn không muốn những dòng như `--- Đang xử lý: demo1.png ---` xuất hiện trong `Kết quả` thì hãy tắt "`In Trạng thái xử lý trong Kết quả:`".
    - **2c. Bắt đầu OCR:** Nhấn nút "`Bắt đầu xử lý`" để bắt đầu OCR.
    - **2d. Kết quả:** Văn bản sau khi được xử lý sẽ hiển thị nội dung ở khung bên phải, bạn nên nhìn bên "`Kết quả đẹp`" (phần mềm sẽ tự chuyển qua Thẻ đó khi OCR kết thúc).
-   - **2e. Sao chép kết quả:** Nhấn nút này để sao chép nội dung trong ô "`Kết quả`", Nếu bạn đang ở Thẻ "`Kết quả đẹp`" thì định dạng sẽ được giữ nguyên, bạn có thể dán vào Word hoặc phần mềm khác.
+   - **2e. Sao chép kết quả & Xuất Word:** Nhấn nút này để sao chép nội dung trong ô "`Kết quả`". Nếu bạn đang ở Thẻ "`Kết quả đẹp`" thì định dạng sẽ được giữ nguyên, bạn có thể dán vào Word hoặc phần mềm khác. Bạn cũng có thể dùng nút "`Xuất ra Word`" để lưu trực tiếp thành file `.docx`.
 
 - *Mẹo*: Nhấn nút "`Xả Model AI`" giúp giải phóng RAM/VRAM khi bạn không có ý định tiếp tục sử dụng OCR, nhưng lại chưa muốn tắt phần mềm.
 

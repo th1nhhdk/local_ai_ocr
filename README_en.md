@@ -8,7 +8,7 @@ English
 
 An **local**, **offline** (after initial setup), **portable** OCR software that can process images and PDF files, using *DeepSeek-OCR* AI (running directly on your machine).
 
-![screenshot_v2.2](assets/screenshot_v2.2_en.png)
+![screenshot_v2.4](assets/screenshot_v2.4_en.png)
 
 ## Features
 
@@ -18,7 +18,9 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 - **Multiple file format support:** Images `.png`, `.jpg`, `.webp`, `.heic`, `.heif` and `.pdf` documents.
 - **Smart PDF processing:** Allows selecting page range for processing (for PDF files with >=2 pages).
 - **Queue system:** Allows processing multiple files sequentially.
+- **Automatic Image Extraction:** Automatically detects and extracts graphs, charts, etc., to insert them as images into the result.
 - **Fancy Output:** Supports displaying Formatted text instead of raw text, **allows keeping formatting** for pasting into Word, ...
+- **Export to Word:** Supports exporting the result directly to a `.docx` file alongside the standard Copy to Clipboard option.
 - **OCR process illustration:** See exactly what the AI detected as OCR progresses (pretty cool).
 - **3 processing modes:**
   - **Markdown Document (keep formatting):** Extracts text, attempts to preserve layout (Tables, ...)
@@ -67,7 +69,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
    - *Tip:* If you don't want lines such as `--- Processing: demo1.png ---` appearing in your `Output` then turn off "`Print Processing status in Output:`". 
    - **2c. Start OCR:** Press the "`Start Processing`" button to begin OCR.
    - **2d. Output:** The processed text will be displayed in the right panel; you should look at "`Fancy Output`" (the software will automatically switch to that Tab when OCR finishes).
-   - **2e. Copy output:** Press this button to copy the content in the "`Output`" box. If you're on the "`Fancy Output`" Tab, the formatting will be preserved, and you can paste it into Word or other software.
+   - **2e. Copy output & Export to Word:** Press this button to copy the content in the "`Output`" box. If you're on the "`Fancy Output`" Tab, the formatting will be preserved, and you can paste it into Word or other software. You can also use the "`Export to Word`" option to save the result directly as a `.docx` file.
 
 - *Tip*: Press the "`Unload AI Model`" button to free RAM/VRAM when you don't intend to continue using OCR but don't want to close the software yet.
 
