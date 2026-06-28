@@ -19,7 +19,6 @@ if exist "%ARCHIVE_NAME%" (
 echo Creating %ARCHIVE_NAME%...
 
 %ZIP% a -tzip "%ARCHIVE_NAME%" ^
-    "bin\wget.exe" ^
     "demo\" ^
     "src\" ^
     ".gitignore" ^
