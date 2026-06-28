@@ -5,7 +5,8 @@ import os
 import re
 import html
 import markdown
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QPushButton, QLabel, QTextEdit, QMenu
+import pypandoc
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton, QLabel, QTextEdit, QMenu, QFileDialog, QMessageBox
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtCore import Qt, Slot, QUrl
@@ -87,6 +88,31 @@ class FancyOutput(QWebEngineView):
         super().__init__(parent)
         self.page().setBackgroundColor(Qt.white)
 
+    def _convert_to_html(self, raw_md):
+        # 1. Extract and protect LaTeX blocks from markdown processing
+        # Markdown would destroy LaTeX syntax, so we replace with placeholders
+        math_blocks = []
+
+        def replace_math(match):
+            block = match.group(0)
+            block = balance_latex_delimiters(block)
+            math_blocks.append(block)
+            return f"MATHJAXBLOCKPLACEHOLDER{len(math_blocks)-1}END"
+
+        # Match both display (\[...\]) and inline (\(...\)) math
+        pattern = re.compile(r'(\\\[.*?\\\])|(\\\(.*?\\\))', re.DOTALL)
+        processed_md = pattern.sub(replace_math, raw_md)
+
+        # 2. Convert markdown to HTML
+        html_content = markdown.markdown(processed_md, extensions=['tables', 'fenced_code', 'nl2br'])
+
+        # 3. Restore LaTeX blocks, escaped for HTML safety
+        for i, block in enumerate(math_blocks):
+            safe_block = html.escape(block)
+            html_content = html_content.replace(f"MATHJAXBLOCKPLACEHOLDER{i}END", safe_block)
+
+        return html_content
+
     def set_markdown(self, md_content):
         # Convert markdown to HTML and render with MathJax.
         if not md_content:
@@ -94,27 +120,7 @@ class FancyOutput(QWebEngineView):
             return
 
         try:
-            # 1. Extract and protect LaTeX blocks from markdown processing
-            # Markdown would destroy LaTeX syntax, so we replace with placeholders
-            math_blocks = []
-
-            def replace_math(match):
-                block = match.group(0)
-                block = balance_latex_delimiters(block)
-                math_blocks.append(block)
-                return f"MATHJAXBLOCKPLACEHOLDER{len(math_blocks)-1}END"
-
-            # Match both display (\[...\]) and inline (\(...\)) math
-            pattern = re.compile(r'(\\\[.*?\\\])|(\\\(.*?\\\))', re.DOTALL)
-            processed_md = pattern.sub(replace_math, md_content)
-
-            # 2. Convert markdown to HTML
-            html_content = markdown.markdown(processed_md, extensions=['tables', 'fenced_code', 'nl2br'])
-
-            # 3. Restore LaTeX blocks, escaped for HTML safety
-            for i, block in enumerate(math_blocks):
-                safe_block = html.escape(block)
-                html_content = html_content.replace(f"MATHJAXBLOCKPLACEHOLDER{i}END", safe_block)
+            html_content = self._convert_to_html(md_content)
 
             # 4. Setup MathJax
             base_path = os.path.dirname(os.path.abspath(__file__))
@@ -225,9 +231,16 @@ class OutputPanel(QWidget):
         self.btn_copy = QPushButton()
         self.btn_copy.clicked.connect(self.copy_output)
 
+        self.btn_export = QPushButton()
+        self.btn_export.clicked.connect(self.export_to_word)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.addWidget(self.btn_copy)
+        btn_layout.addWidget(self.btn_export)
+
         self.layout.addWidget(self.tabs)
         self.layout.addWidget(self.lbl_proofread)
-        self.layout.addWidget(self.btn_copy)
+        self.layout.addLayout(btn_layout)
 
     # ==================== Language ====================
     def update_language(self, t):
@@ -235,7 +248,12 @@ class OutputPanel(QWidget):
         self.lbl_proofread.setText(t["lbl_proofread"])
         self.tabs.setTabText(0, t["tab_raw"])
         self.tabs.setTabText(1, t["tab_fancy"])
+        self.btn_export.setText(t.get("btn_export_word", "Export to Word"))
         self._update_copy_button_text()
+
+    def set_processing_state(self, is_processing):
+        self.btn_copy.setEnabled(not is_processing)
+        self.btn_export.setEnabled(not is_processing)
 
     def _update_copy_button_text(self):
         if not self.t or "btn_copy" not in self.t:
@@ -282,3 +300,55 @@ class OutputPanel(QWidget):
             self.text_output.copy()
         else:
             self.web_view.copy_content()
+
+    def export_to_word(self):
+        raw_md = self.text_output.toPlainText()
+        if not raw_md.strip():
+            return
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Word Document",
+            "",
+            "Word Document (*.docx)"
+        )
+
+        if filename:
+            try:
+                import docx
+                from docx.oxml import OxmlElement
+                from docx.oxml.ns import qn
+
+                # Convert to HTML first to preserve HTML tables and image paths
+                # Then use Pandoc's HTML reader with math extensions to create DOCX
+                html_content = self.web_view._convert_to_html(raw_md)
+                pypandoc.convert_text(html_content, 'docx', format='html+tex_math_single_backslash', outputfile=filename)
+
+                # Add borders to all tables via XML to avoid missing style errors
+                doc = docx.Document(filename)
+                for table in doc.tables:
+                    tbl = table._tbl
+                    tblPr = tbl.tblPr
+                    if tblPr is None:
+                        tblPr = OxmlElement('w:tblPr')
+                        tbl.insert(0, tblPr)
+
+                    tblBorders = tblPr.find(qn('w:tblBorders'))
+                    if tblBorders is not None:
+                        tblPr.remove(tblBorders)
+
+                    tblBorders = OxmlElement('w:tblBorders')
+                    for border_name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+                        border = OxmlElement(f'w:{border_name}')
+                        border.set(qn('w:val'), 'single')
+                        border.set(qn('w:sz'), '4')  # 1/2 pt border
+                        border.set(qn('w:space'), '0')
+                        border.set(qn('w:color'), 'auto')
+                        tblBorders.append(border)
+
+                    tblPr.append(tblBorders)
+
+                doc.save(filename)
+
+            except Exception as e:
+                QMessageBox.critical(self, "Export Error", f"Failed to export to Word:\n{e}")

@@ -40,6 +40,7 @@
     "tab_fancy": "Fancy Output",
     "lbl_proofread": "Please proofread the output, especially when there are important information.",
     "btn_copy": "Copy \"{}\"",
+    "btn_export_word": "Export to Word",
 
     "title_info": "Info",
     "title_done": "Done",

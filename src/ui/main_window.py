@@ -242,6 +242,7 @@ class MainWindow(QMainWindow):
     def set_processing_state(self, is_processing):
         # Toggle all UI elements between processing/idle states.
         self.control_panel.set_processing_state(is_processing)
+        self.output_panel.set_processing_state(is_processing)
         self.btn_settings.setEnabled(not is_processing)
         self.btn_unload.setEnabled(not is_processing)
         self.combo_lang.setEnabled(not is_processing)
