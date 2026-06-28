@@ -285,6 +285,22 @@ class MainWindow(QMainWindow):
     def start_processing(self, queue, prompt_template, model_name, prompt_id=None):
         # Start OCR worker thread to process the queue.
         self.output_panel.clear()
+
+        # Clean output folder
+        try:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            output_dir = os.path.join(base_dir, "output")
+            if os.path.exists(output_dir):
+                for filename in os.listdir(output_dir):
+                    file_path = os.path.join(output_dir, filename)
+                    try:
+                        if os.path.isfile(file_path):
+                            os.remove(file_path)
+                    except Exception:
+                        pass
+        except Exception as e:
+            print(f"Failed to clean output directory: {e}")
+
         self.set_processing_state(True)
         self.batch_start_time = time.time()
 

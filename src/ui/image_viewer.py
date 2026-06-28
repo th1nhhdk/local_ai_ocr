@@ -36,7 +36,7 @@ class ImageViewer(QGraphicsView):
         self.scene.setSceneRect(QRectF(pixmap.rect()))
         self.fit_content()
 
-    def draw_box(self, coords, color=None):
+    def draw_box(self, coords, color=None, label=""):
         """
         Draw a bounding box overlay on the image.
 
@@ -46,6 +46,7 @@ class ImageViewer(QGraphicsView):
         See: https://deepwiki.com/deepseek-ai/DeepSeek-OCR/3.5-understanding-output#bounding-box-format
         coords: [x1, y1, x2, y2] in 0-999 scale
         color: QColor (optional, generates random if not provided)
+        label: The element class string from grounding tags
         """
         if not self.pixmap_item or self.current_image_size == (0, 0):
             return
@@ -76,7 +77,14 @@ class ImageViewer(QGraphicsView):
                 color = QColor(r, g, b)
 
             pen = QPen(color)
-            pen.setWidth(4) # Thick border for visibility
+
+            # Adjust rendering style based on Label Type
+            lbl = label.strip().lower()
+            if lbl == 'title':
+                pen.setWidth(4) # Thicker border for titles
+            else:
+                pen.setWidth(2) # Standard border for others
+
             rect_item.setPen(pen)
 
             # Semi-transparent fill using same color with alpha

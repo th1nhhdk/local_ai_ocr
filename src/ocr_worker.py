@@ -5,7 +5,10 @@
 import time
 import re
 import ast
-from PySide6.QtCore import QThread, Signal
+import os
+import io
+from PIL import Image, ImageOps
+from PySide6.QtCore import QThread, Signal, QUrl
 from ollama_service import stream_ocr_response
 import file_handler
 import config
@@ -21,14 +24,14 @@ class OCRWorker(QThread):
     - image_finished: Emits when done with an image (includes duration)
     - finished_all: Emits when entire queue is processed
     - error_occurred: Emits error messages
-    - box_detected: Emits bounding box coordinates [x1, y1, x2, y2]
+    - box_detected: Emits bounding box coordinates [x1, y1, x2, y2] and label type
     """
     stream_chunk = Signal(str)
     image_started = Signal(str, int)
     image_finished = Signal(str, float)
     finished_all = Signal()
     error_occurred = Signal(str)
-    box_detected = Signal(list)
+    box_detected = Signal(list, str)
 
     def __init__(self, client, queue_items, prompt, model_name, prompt_id=None):
         super().__init__()
@@ -84,7 +87,7 @@ class OCRWorker(QThread):
                 self.buffer = ""
                 for chunk in stream_ocr_response(self.client, self.model_name, self.prompt, img_bytes, config.INFERENCE_PARAMS):
                     if not self.is_running: break 
-                    self.process_chunk(chunk)
+                    self.process_chunk(chunk, img_bytes)
 
                 # Flush any remaining text in buffer
                 if self.buffer:
@@ -104,7 +107,7 @@ class OCRWorker(QThread):
         except Exception as e:
             self.error_occurred.emit(str(e))
 
-    def process_chunk(self, chunk):
+    def process_chunk(self, chunk, img_bytes=None):
         """
         Processes a chunk of streaming text from the AI.
         In passthrough mode: directly emits all text.
@@ -149,28 +152,68 @@ class OCRWorker(QThread):
             # --- Process the REF part ---
             # In 'ocr' mode, ref tags contain the actual OCR text - emit it
             if self.grounding_mode == 'ocr' and ref_content:
-                self.stream_chunk.emit(ref_content)
+                if ref_content.strip().lower() != 'image':
+                    self.stream_chunk.emit(ref_content)
 
             # Use 'grounding_mode' logic to decide on suppression
             # If 'markdown' mode, we suppress the label entirely.
             # If 'ocr' mode, we emitted it above.
 
             # --- Process the DET part ---
+            valid_coords = []
             try:
                 # Format can be [[x,y,x,y]] or [[x,y,x,y], [x,y,x,y]]
                 parsed_data = ast.literal_eval(det_content)
 
                 # Case 1: Single box [x1, y1, x2, y2]
                 if len(parsed_data) == 4 and all(isinstance(x, (int, float)) for x in parsed_data):
-                    self.box_detected.emit(parsed_data)
+                    self.box_detected.emit(parsed_data, ref_content or "")
+                    valid_coords.append(parsed_data)
 
                 # Case 2: Multiple boxes [[x1, y1...], [x2, y2...]]
                 else:
                     for item in parsed_data:
                         if isinstance(item, list) and len(item) == 4:
-                            self.box_detected.emit(item)
+                            self.box_detected.emit(item, ref_content or "")
+                            valid_coords.append(item)
             except Exception:
                 pass  # Invalid coordinates, ignore
+            
+            # Auto-extract image crops
+            if ref_content and ref_content.strip().lower() == 'image' and valid_coords and img_bytes:
+                try:
+                    # Use the first bounding box for the crop
+                    coords = valid_coords[0]
+                    img = Image.open(io.BytesIO(img_bytes))
+                    img = ImageOps.exif_transpose(img)
+                    img_w, img_h = img.size
+
+                    x1 = int((coords[0] / 999.0) * img_w)
+                    y1 = int((coords[1] / 999.0) * img_h)
+                    x2 = int((coords[2] / 999.0) * img_w)
+                    y2 = int((coords[3] / 999.0) * img_h)
+
+                    # Ensure coordinates are within image bounds
+                    x1, y1 = max(0, x1), max(0, y1)
+                    x2, y2 = min(img_w, x2), min(img_h, y2)
+
+                    if x2 > x1 and y2 > y1:
+                        cropped_img = img.crop((x1, y1, x2, y2))
+
+                        # Save to output/
+                        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                        output_dir = os.path.join(base_dir, "output")
+                        os.makedirs(output_dir, exist_ok=True)
+
+                        crop_filename = f"crop_{int(time.time()*1000)}.png"
+                        crop_path = os.path.join(output_dir, crop_filename)
+                        cropped_img.save(crop_path)
+
+                        # Emit markdown tag so it renders inline and works well with clipboard
+                        file_url = QUrl.fromLocalFile(crop_path).toString()
+                        self.stream_chunk.emit(f"\n![image]({file_url})\n")
+                except Exception as e:
+                    print(f"Failed to crop image region: {e}")
 
             # Determine if we should consume following whitespace
             # In 'markdown' mode, we consume whitespace to clean up the removal of tags.

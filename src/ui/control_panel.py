@@ -289,8 +289,13 @@ class ControlPanel(QWidget):
 
             # Restore any previously drawn bounding boxes for this image
             if row in self.image_boxes:
-                for coords, color in self.image_boxes[row]:
-                    self.image_viewer.draw_box(coords, color)
+                for item in self.image_boxes[row]:
+                    if len(item) == 3:
+                        coords, color, label = item
+                        self.image_viewer.draw_box(coords, color, label)
+                    else:
+                        coords, color = item
+                        self.image_viewer.draw_box(coords, color, "")
         except Exception as e:
             print(f"Error displaying loaded image: {e}")
 
@@ -330,7 +335,7 @@ class ControlPanel(QWidget):
     def on_stream_chunk(self, text):
         pass # Output is handled by OutputPanel
 
-    def draw_box(self, coords):
+    def draw_box(self, coords, label=""):
         # Draw bounding box for current image and store for persistence.
         if self.current_processing_index == -1: return
 
@@ -344,11 +349,11 @@ class ControlPanel(QWidget):
         # Store for redrawing when switching images
         if self.current_processing_index not in self.image_boxes:
             self.image_boxes[self.current_processing_index] = []
-        self.image_boxes[self.current_processing_index].append((coords, color))
+        self.image_boxes[self.current_processing_index].append((coords, color, label))
 
         # Draw immediately if this image is currently visible
         if self.list_widget.currentRow() == self.current_processing_index:
-            self.image_viewer.draw_box(coords, color)
+            self.image_viewer.draw_box(coords, color, label)
 
     # ==================== Progress Bar ====================
     def increment_progress(self):

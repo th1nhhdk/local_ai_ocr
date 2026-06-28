@@ -30,6 +30,7 @@ table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
 th, td { border: 1px solid #000000; padding: 8px; text-align: left; }
 th { background-color: #F2F2F2; font-weight: bold; }
 tr:nth-child(even) { background-color: #FAFAFA; }
+img { max-width: 100%; max-height: 100%; height: auto; width: auto; display: block; margin: 10px auto; }
 </style>
 """
 
