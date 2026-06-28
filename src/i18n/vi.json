@@ -25,9 +25,6 @@
     "lbl_queue": "Hàng chờ xử lý:",
 
     "group_settings": "Cài đặt",
-    "lbl_print_headers": "In Trạng thái xử lý trong Kết quả:",
-    "btn_toggle_headers_on": "Bật",
-    "btn_toggle_headers_off": "Tắt",
     "lbl_prompt": "Chọn chế độ:",
     "prompt_labels": {
         "p_markdown": "Tài liệu Markdown (giữ định dạng)",
@@ -49,9 +46,7 @@
     "title_error": "Lỗi",
     "title_disclaimer": "Lưu ý",
 
-    "msg_started": "Đang xử lý: {}",
     "msg_stopped": "Đã được dừng lại bởi người dùng.",
-    "msg_elapsed": "{}: Hoàn thành trong {:.2f}s",
     "msg_done": "Hoàn tất xử lý.",
     "msg_total": "Tổng thời gian: {:.2f}s",
     "msg_model_unloaded": "Đã giải phóng Model AI khỏi bộ nhớ.",

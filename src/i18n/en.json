@@ -25,9 +25,6 @@
     "lbl_queue": "Processing Queue:",
 
     "group_settings": "Settings",
-    "lbl_print_headers": "Print Processing status in Output:",
-    "btn_toggle_headers_on": "On",
-    "btn_toggle_headers_off": "Off",
     "lbl_prompt": "Select Mode:",
     "prompt_labels": {
         "p_markdown": "Markdown Document (keep formatting)",
@@ -49,9 +46,7 @@
     "title_error": "Error",
     "title_disclaimer": "Disclaimer",
 
-    "msg_started": "Processing: {}",
     "msg_stopped": "Stopped by user.",
-    "msg_elapsed": "{}: Done in {:.2f}s",
     "msg_done": "Processing complete.",
     "msg_total": "Total Time: {:.2f}s",
     "msg_model_unloaded": "AI Model unloaded from memory.",

@@ -92,16 +92,6 @@ class MainWindow(QMainWindow):
 
         top_bar.addStretch()
 
-        # Print Headers Toggle
-        self.lbl_print_headers = QLabel(self.t["lbl_print_headers"])
-        top_bar.addWidget(self.lbl_print_headers)
-
-        self.btn_toggle_headers = QPushButton(self.t["btn_toggle_headers_on"])
-        self.btn_toggle_headers.setObjectName("btn_toggle_headers")
-        self.btn_toggle_headers.setCheckable(True)
-        self.btn_toggle_headers.setChecked(True)
-        self.btn_toggle_headers.toggled.connect(self.update_header_toggle_text)
-        top_bar.addWidget(self.btn_toggle_headers)
 
         # Select Mode (Prompt)
         self.lbl_prompt = QLabel("Select Mode:")
@@ -208,9 +198,6 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(self, self.t["title_error"], message)
 
     # ==================== Top Bar: Language (Right) ====================
-    def update_header_toggle_text(self, checked):
-        text = self.t["btn_toggle_headers_on"] if checked else self.t["btn_toggle_headers_off"]
-        self.btn_toggle_headers.setText(text)
 
     def change_language(self, lang_name):
         self.current_lang_code = self.languages[lang_name]
@@ -223,8 +210,6 @@ class MainWindow(QMainWindow):
         self.btn_about.setText(self.t["btn_about"])
         self.btn_settings.setText(self.t["btn_settings"])
         self.btn_unload.setText(self.t["btn_unload"])
-        self.lbl_print_headers.setText(self.t["lbl_print_headers"])
-        self.update_header_toggle_text(self.btn_toggle_headers.isChecked())
 
         self.lbl_prompt.setText(self.t["lbl_prompt"])
 
@@ -261,7 +246,6 @@ class MainWindow(QMainWindow):
         self.btn_unload.setEnabled(not is_processing)
         self.combo_lang.setEnabled(not is_processing)
         self.combo_prompts.setEnabled(not is_processing)
-        self.btn_toggle_headers.setEnabled(not is_processing)
 
     # ==================== Processing Flow ====================
     @Slot(list)
@@ -333,19 +317,13 @@ class MainWindow(QMainWindow):
     # ==================== Processing Callbacks ====================
     @Slot(str, int)
     def on_image_started(self, display_name, index):
-        if self.btn_toggle_headers.isChecked():
-            self.output_panel.append_text(f"\n--- {self.t['msg_started'].format(display_name)} ---\n")
-        else:
-            self.output_panel.append_text(f"\n")
+        self.output_panel.append_text("\n")
         self.control_panel.on_process_started(index)
 
     @Slot(str, float)
     def on_image_finished(self, display_name, duration):
         self.control_panel.increment_progress()
-        if self.btn_toggle_headers.isChecked():
-            self.output_panel.append_text(f"\n--- {self.t['msg_elapsed'].format(display_name, duration)} ---\n")
-        else:
-            self.output_panel.append_text(f"\n")
+        self.output_panel.append_text("\n")
 
         # Update Windows taskbar progress
         if self.taskbar:
