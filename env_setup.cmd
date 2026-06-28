@@ -6,8 +6,6 @@ setlocal enabledelayedexpansion
 @REM ============================================================
 set "SCRIPTROOT=%~dp0"
 
-set "WGET_BIN=%SCRIPTROOT%bin\wget.exe"
-
 set "PYTHON_DIR=%SCRIPTROOT%python"
 set "PYTHON_VER=3.13.13"
 set "PYTHON_ZIP=python-%PYTHON_VER%-embed-amd64.zip"
@@ -45,7 +43,7 @@ if exist "%PYTHON_BIN%" (
 
     echo - Downloading Python %PYTHON_VER% Embeddable...
     echo.
-    "%WGET_BIN%" -q --show-progress -O "%PYTHON_ZIP%" "%PYTHON_URL%"
+    curl.exe -# -L -o "%PYTHON_ZIP%" "%PYTHON_URL%"
     echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
@@ -82,7 +80,7 @@ if exist "%PYTHON_DIR%\Scripts\pip.exe" (
 
     echo - Downloading get-pip.py...
     echo.
-    "%WGET_BIN%" -q --show-progress -O get-pip.py "%PIP_URL%"
+    curl.exe -# -L -o get-pip.py "%PIP_URL%"
     echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
@@ -118,7 +116,7 @@ if exist "%OLLAMA_BIN%" (
     @REM Download checksum file
     echo - Downloading checksums...
     echo.
-    "%WGET_BIN%" -q --show-progress -O sha256sum.txt "%OLLAMA_CHECKSUM_URL%"
+    curl.exe -# -L -o sha256sum.txt "%OLLAMA_CHECKSUM_URL%"
     echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
@@ -146,7 +144,7 @@ if exist "%OLLAMA_BIN%" (
     if not exist "%OLLAMA_ZIP%" (
         echo - Downloading %OLLAMA_ZIP%...
         echo.
-        "%WGET_BIN%" -q --show-progress -O "%OLLAMA_ZIP%" "%OLLAMA_DOWNLOAD_URL%"
+        curl.exe -# -L -o "%OLLAMA_ZIP%" "%OLLAMA_DOWNLOAD_URL%"
         echo.
         if !errorlevel! neq 0 goto :ERROR_NETWORK
 
