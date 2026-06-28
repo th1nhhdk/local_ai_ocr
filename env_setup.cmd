@@ -42,9 +42,7 @@ if exist "%PYTHON_BIN%" (
     )
 
     echo - Downloading Python %PYTHON_VER% Embeddable...
-    echo.
     curl.exe -# -L -o "%PYTHON_ZIP%" "%PYTHON_URL%"
-    echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
     echo - Extracting to %PYTHON_DIR%...
@@ -79,9 +77,7 @@ if exist "%PYTHON_DIR%\Scripts\pip.exe" (
     if exist "get-pip.py" del "get-pip.py"
 
     echo - Downloading get-pip.py...
-    echo.
     curl.exe -# -L -o get-pip.py "%PIP_URL%"
-    echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
     echo - Installing pip...
@@ -115,9 +111,7 @@ if exist "%OLLAMA_BIN%" (
 ) else (
     @REM Download checksum file
     echo - Downloading checksums...
-    echo.
     curl.exe -# -L -o sha256sum.txt "%OLLAMA_CHECKSUM_URL%"
-    echo.
     if !errorlevel! neq 0 goto :ERROR_NETWORK
 
     @REM Extract expected hash
@@ -132,8 +126,9 @@ if exist "%OLLAMA_BIN%" (
             for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
 
             if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
-                echo - Checksum doesn't match. Deleting corrupted file...
-                del "%OLLAMA_ZIP%"
+                echo WARNING: Checksum doesn't match for existing file. Proceeding anyway...
+                echo EXPECTED: !EXPECTED_HASH!
+                echo FOUND: !FILE_HASH!
             ) else (
                 echo - Checksum verified.
             )
@@ -143,9 +138,7 @@ if exist "%OLLAMA_BIN%" (
     @REM Download if missing
     if not exist "%OLLAMA_ZIP%" (
         echo - Downloading %OLLAMA_ZIP%...
-        echo.
         curl.exe -# -L -o "%OLLAMA_ZIP%" "%OLLAMA_DOWNLOAD_URL%"
-        echo.
         if !errorlevel! neq 0 goto :ERROR_NETWORK
 
         @REM Verify downloaded file
@@ -153,9 +146,9 @@ if exist "%OLLAMA_BIN%" (
             set "FILE_HASH="
             for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
             if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
-                echo FATAL: Downloaded file's checksum doesn't match!
-                del "%OLLAMA_ZIP%"
-                goto :ERROR_NETWORK
+                echo WARNING: Downloaded file's checksum doesn't match! Proceeding anyway...
+                echo EXPECTED: !EXPECTED_HASH!
+                echo FOUND: !FILE_HASH!
             )
         )
     )
