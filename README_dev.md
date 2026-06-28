@@ -1,13 +1,12 @@
 <img src='src/res/icon.png' width='128' height='128'>
 
-# Local AI OCR (v2.3.1)
+# Local AI OCR (v2.4.0)
 
 ## Tech Stack
-- **wget:** `1.21.4`
-- **Python:** Embeddable Python `3.13.13`
+- **Python:** Embeddable Python `3.13.14`
 - **Ollama:** `0.21.2`
 - **deepseek-ocr:3b:** `0e7b018b8a22`
-- **Frontend:** PySide6 `6.11.0`
+- **Frontend:** PySide6 `6.11.1`
 - **src/res/node/mathjax:** `4.0.0`
 - **src/res/node/@mathjax/mathjax-newcm-font:** `4.0.0`
 
