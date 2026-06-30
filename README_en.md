@@ -8,7 +8,7 @@ English
 
 An **local**, **offline** (after initial setup), **portable** OCR software that can process images and PDF files, using *DeepSeek-OCR* AI (running directly on your machine).
 
-![screenshot_v2.4](assets/screenshot_v2.4_en.png)
+![screenshot_v2.4](assets/screenshot_v3.0_en.png)
 
 ## Features
 

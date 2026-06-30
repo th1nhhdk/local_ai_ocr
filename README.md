@@ -8,7 +8,7 @@ Tiếng Việt |
 
 Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần đầu), **portable**, có thể xử lý ảnh và tệp PDF, sử dụng AI *DeepSeek-OCR* (chạy nội bộ trực tiếp trên máy).
 
-![screenshot_v2.4](assets/screenshot_v2.4.png)
+![screenshot_v2.4](assets/screenshot_v3.0.png)
 
 ## Tính năng
 
