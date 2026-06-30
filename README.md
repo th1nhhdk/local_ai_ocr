@@ -37,7 +37,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 - **CPU:** Tối thiểu 4 lõi/8 luồng
 - **RAM:** Tối thiểu 16GB
 - **Dung lượng trống:** Khoảng 11GB
-- **GPU:** Có GPU (nên dùng Nvidia), với tối thiểu 8GB VRAM
+- **GPU:** Có GPU Nvidia, với tối thiểu 8GB VRAM
   - **Lưu ý:** Phần mềm sẽ cố dùng GPU, thậm chí khi dung lượng VRAM không đạt yêu cầu để tăng tốc phần mềm.
 
 ## Tải về và thiết lập
@@ -50,8 +50,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 
 ## Lưu ý trước khi sử dụng
 
-- Vì giới hạn kỹ thuật, AI OCR **có thể bị kẹt** trong vòng lặp vô hạn. Nếu chuyện đó xảy ra, hãy nhấn **DỪNG LẠI**.
-- Mặc dù `DeepSeek-OCR` có độ chính xác cực cao, bạn **vẫn nên kiểm tra lại kết quả**, đặc biệt với tài liệu quan trọng.
+- Mặc dù `DeepSeek-OCR-2` có độ chính xác cực cao, bạn **vẫn nên kiểm tra lại kết quả**, đặc biệt với tài liệu quan trọng.
 - Lần chạy đầu tiên luôn tốn một chút thời gian để load AI Model vào bộ nhớ.
 - Việc kéo và thả các tệp tin có thể sẽ không giữ lại thứ tự tệp, đây là giới hạn phần mềm và hiện không có cách khắc phục.
 
@@ -65,9 +64,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
    - **2a. Quản lý tệp tin:**
       + Thêm ảnh/Thêm PDF: Chọn trang tài liệu cần xử lý để thêm vào `Hàng chờ xử lý`.
       + Xóa Hàng chờ: Xóa sạch danh sách `Hàng chờ xử lý`.
-   - **2b. Chọn chế độ (nên giữ mặc định):** Chọn giữa 3 chế độ OCR, mặc định là tốt nhất.
-      - **Lưu ý:** Nếu chế độ mặc định không in ra gì cả (hình bạn đưa quá phức tạp), thì hãy thử chế độ "`OCR Tự do (Free OCR)`".
-   - *Mẹo:* Nếu bạn không muốn những dòng như `--- Đang xử lý: demo1.png ---` xuất hiện trong `Kết quả` thì hãy tắt "`In Trạng thái xử lý trong Kết quả:`".
+   - **2b. Chọn chế độ (nên giữ mặc định):** Chọn giữa 2 chế độ OCR, mặc định là tốt nhất.
    - **2c. Bắt đầu OCR:** Nhấn nút "`Bắt đầu xử lý`" để bắt đầu OCR.
    - **2d. Kết quả:** Văn bản sau khi được xử lý sẽ hiển thị nội dung ở khung bên phải, bạn nên nhìn bên "`Kết quả đẹp`" (phần mềm sẽ tự chuyển qua Thẻ đó khi OCR kết thúc).
    - **2e. Sao chép kết quả & Xuất Word:** Nhấn nút này để sao chép nội dung trong ô "`Kết quả`". Nếu bạn đang ở Thẻ "`Kết quả đẹp`" thì định dạng sẽ được giữ nguyên, bạn có thể dán vào Word hoặc phần mềm khác. Bạn cũng có thể dùng nút "`Xuất ra Word`" để lưu trực tiếp thành file `.docx`.
@@ -83,5 +80,4 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 - `env_setup.bat` lỗi ở bước `[1/6]`:
    + Bạn đang dùng Windows 10/11 21H2 à? thử năng cấp lên ít nhất 22H2 xem?
 
-- Nếu bạn gặp lỗi liên quan đến GPU, hãy dùng `run_wlog.cmd` để xem log lỗi, hoặc dùng `run_cpu-only.cmd` để phần mềm không sử dụng GPU.
-- Chế độ "`Tài liệu Markdown (giữ định dạng)`" không in ra gì cả: Hãy thử chế độ "`OCR Tự do (Free OCR)`".
+- Nếu bạn gặp lỗi liên quan đến GPU, hãy dùng `run_cpu-only.cmd` để phần mềm không sử dụng GPU.

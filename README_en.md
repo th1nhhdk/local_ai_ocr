@@ -36,7 +36,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 - **CPU:** Minimum 4 cores/8 threads
 - **RAM:** Minimum 16GB
 - **Free storage:** About 11GB
-- **GPU:** GPU available (Nvidia recommended), with minimum 8GB VRAM
+- **GPU:** Nvidia GPU available, with minimum 8GB VRAM
   - **Note:** The software will try to use the GPU, even when VRAM capacity doesn't meet requirements, to accelerate the software.
 
 ## Download and Setup
@@ -49,8 +49,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 
 ## Notes Before Use
 
-- Due to technical limitations, the AI OCR **may get stuck** in an infinite loop. If that happens, press **STOP**.
-- Although `DeepSeek-OCR` has extremely high accuracy, you **should still verify the results**, especially for important documents.
+- Although `DeepSeek-OCR-2` has extremely high accuracy, you **should still verify the results**, especially for important documents.
 - The first run always takes some time to load the AI Model into memory.
 - Dragging and dropping files may not preserve the file order, this is a software limitation and there is currently no way to fix it.
 
@@ -64,9 +63,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
    - **2a. File management:**
       + Add Image/Add PDF: Select document pages to add to the `Processing Queue`.
       + Clear Queue: Clear the `Processing Queue` list.
-   - **2b. Select mode (recommended to keep default):** Choose between 3 OCR modes, default is the best.
-      - **Note:** If the default mode doesn't output anything (image you provided is too complex), try selecting "`Free OCR`".
-   - *Tip:* If you don't want lines such as `--- Processing: demo1.png ---` appearing in your `Output` then turn off "`Print Processing status in Output:`". 
+   - **2b. Select mode (recommended to keep default):** Choose between 2 OCR modes, default is the best.
    - **2c. Start OCR:** Press the "`Start Processing`" button to begin OCR.
    - **2d. Output:** The processed text will be displayed in the right panel; you should look at "`Fancy Output`" (the software will automatically switch to that Tab when OCR finishes).
    - **2e. Copy output & Export to Word:** Press this button to copy the content in the "`Output`" box. If you're on the "`Fancy Output`" Tab, the formatting will be preserved, and you can paste it into Word or other software. You can also use the "`Export to Word`" option to save the result directly as a `.docx` file.
@@ -82,6 +79,4 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 - `env_setup.bat` fails at `[1/6]`:
    + Are you using Windows 10/11 21H2? try to upgrade to at least 22H2 and see if it works.
 
-- If you encounter GPU-related errors, use `run_wlog.cmd` to view error logs, or use `run_cpu-only.cmd` so the software won't use the GPU.
-
-- "`Markdown Document (keep formatting)`" doesn't output anything: try using "`Free OCR`" mode.
+- If you encounter GPU-related errors, use `run_cpu-only.cmd` so the software won't use the GPU.
