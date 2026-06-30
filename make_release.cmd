@@ -22,7 +22,6 @@ echo Creating %ARCHIVE_NAME%...
     "demo\" ^
     "src\" ^
     ".gitignore" ^
-    "config.toml" ^
     "env_setup.cmd" ^
     "LICENSE" ^
     "README.md" ^
@@ -31,9 +30,6 @@ echo Creating %ARCHIVE_NAME%...
     "requirements.txt" ^
     "run.cmd" ^
     "run_cpu-only.cmd" ^
-    "run_wlog.cmd" ^
-    "run_cpu-only_wlog.cmd" ^
-    -xr^^!"bin\.wget-hsts" ^
     -xr^^!"__pycache__" ^
     -xr^^!"*.pyc" ^
     -xr^^!"*.pyo"

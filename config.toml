@@ -1,4 +1,0 @@
-[engine]
-ip_address = "http://127.0.0.1"
-port = "11435"
-model = "deepseek-ocr:3b"
