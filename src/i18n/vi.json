@@ -4,14 +4,6 @@
     "about_text": "<center><img src='{}' width='64' height='64'><br><b>Local AI OCR</b></center><b>Phiên bản:</b> {}<br><b>Tác giả:</b> {}",
     "btn_about_git": "GitHub",
 
-    "btn_settings": "Cài đặt",
-    "dlg_settings_title": "Cài đặt",
-    "dlg_settings_warning": "<b>Đừng đụng vào mấy cái này!<br>(trừ khi bạn biết mình đang làm gì)</b>",
-    "dlg_settings_restore": "Khôi phục Mặc định",
-    "dlg_settings_apply": "Áp dụng",
-    "dlg_settings_cancel": "Hủy",
-    "dlg_settings_error": "<b>Lỗi:</b> Giá trị không hợp lệ!<br><br><b>IP Address:</b> Chỉ cho phép chữ cái, số, '/', '.', '-', và ':' (<b>không được</b> kết thúc bằng ':')<br><b>Port:</b> Trong phạm vi 1 - 65535<br><b>AI Model:</b> Chỉ cho phép chữ cái, số, ':', '-', và '_'",
-
     "btn_unload": "Xả Model AI",
 
     "btn_add_img": "Thêm ảnh",
@@ -28,8 +20,7 @@
     "lbl_prompt": "Chọn chế độ:",
     "prompt_labels": {
         "p_markdown": "Tài liệu Markdown (giữ định dạng)",
-        "p_freeocr": "OCR Tự do (Free OCR)",
-        "p_ocr": "OCR Tiêu chuẩn"
+        "p_freeocr": "OCR Tự do (Free OCR)"
     },
 
     "btn_run_ready": "Bắt đầu xử lý ({})",
@@ -51,11 +42,6 @@
     "msg_total": "Tổng thời gian: {:.2f}s",
     "msg_model_unloaded": "Đã giải phóng Model AI khỏi bộ nhớ.",
     "msg_model_not_loaded": "Model AI hiện không có trong bộ nhớ.",
-
-    "msg_connection_error": "<b>Lỗi:</b> Không thể kết nối tới Ollama tại '{}'<br>Bạn nhập đúng <b>IP Address</b> và <b>Port</b> không thế?",
-    "msg_model_missing": "<b>Lỗi:</b> Không thể tìm thấy Model AI: '{}'<br>Bạn nhập đúng <b>Model</b> chưa?",
-
-    "msg_loop_disclaimer": "<b>Lưu ý:</b> Vì giới hạn kỹ thuật, AI OCR <b>có thể bị kẹt</b> trong vòng lặp vô hạn.<br>Nếu chuyện đó xảy ra, hãy nhấn <b>DỪNG LẠI</b>.",
 
     "dlg_page_range_title": "Chọn Phạm vi Trang",
     "dlg_page_range_msg": "Tập tin: {}<br>Tổng số trang: {}<br><br>Chọn trang cần nhập:",

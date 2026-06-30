@@ -14,10 +14,9 @@ from PySide6.QtGui import QDesktopServices, QIcon
 import config
 import lang_handler
 from ocr_worker import OCRWorker
-from ollama_service import ModelUnloadWorker, PreCheckWorker
+from transformers_service import ModelUnloadWorker, PreCheckWorker
 from .control_panel import ControlPanel
 from .output_panel import OutputPanel
-from .settings_dialog import SettingsDialog
 
 # Windows-specific feature
 if config.WIN_TASKBAR_PROGRESS_SUPPORT:
@@ -26,9 +25,8 @@ if config.WIN_TASKBAR_PROGRESS_SUPPORT:
 
 class MainWindow(QMainWindow):
     # ==================== Initialization ====================
-    def __init__(self, ollama_client):
+    def __init__(self):
         super().__init__()
-        self.client = ollama_client
 
         self.setWindowTitle(f"Local AI OCR ({config.APP_VERSION})")
         self.resize(1067, 600) # Six-seven... Six-seven... Six-seven...
@@ -48,6 +46,10 @@ class MainWindow(QMainWindow):
         self.unload_worker = None # Model unload worker thread
         self.batch_start_time = 0.0
         self._first_show_done = False
+
+        self.auto_unload_timer = QTimer(self)
+        self.auto_unload_timer.setSingleShot(True)
+        self.auto_unload_timer.timeout.connect(self.unload_model)
 
         self.init_ui()
         self.apply_language()
@@ -81,10 +83,6 @@ class MainWindow(QMainWindow):
         self.btn_about = QPushButton()
         self.btn_about.clicked.connect(self.show_about)
         top_bar.addWidget(self.btn_about)
-
-        self.btn_settings = QPushButton()
-        self.btn_settings.clicked.connect(self.show_settings)
-        top_bar.addWidget(self.btn_settings)
 
         self.btn_unload = QPushButton()
         self.btn_unload.clicked.connect(self.unload_model)
@@ -164,21 +162,13 @@ class MainWindow(QMainWindow):
 
         dlg.exec()
 
-    # ==================== Top Bar: Settings ====================
-    def show_settings(self):
-        dlg = SettingsDialog(self.t, self)
-        if dlg.exec():
-            # Settings changed - recreate client with new host
-            from ollama import Client
-            self.client = Client(host=config.OLLAMA_HOST)
-
     # ==================== Top Bar: Unload ====================
     def unload_model(self):
         # Trigger background worker to unload model from GPU memory.
         self.btn_unload.setEnabled(False)
         self.btn_unload.setText(". . .")
 
-        self.unload_worker = ModelUnloadWorker(self.client)
+        self.unload_worker = ModelUnloadWorker()
         self.unload_worker.finished.connect(self.on_unload_finished)
         self.unload_worker.start()
 
@@ -190,12 +180,7 @@ class MainWindow(QMainWindow):
         if success:
             QMessageBox.information(self, self.t["title_info"], self.t[message])
         else:
-            # Check if it's a connection error
-            if "connect" in message.lower() or "connection" in message.lower():
-                print(f"on_unload_finished(): {message}", file=sys.stderr)
-                QMessageBox.critical(self, self.t["title_error"], self.t["msg_connection_error"].format(config.OLLAMA_HOST))
-            else:
-                QMessageBox.critical(self, self.t["title_error"], message)
+            QMessageBox.critical(self, self.t["title_error"], message)
 
     # ==================== Top Bar: Language (Right) ====================
 
@@ -208,7 +193,6 @@ class MainWindow(QMainWindow):
         # Apply translation strings to all UI elements.
         # Top Bar
         self.btn_about.setText(self.t["btn_about"])
-        self.btn_settings.setText(self.t["btn_settings"])
         self.btn_unload.setText(self.t["btn_unload"])
 
         self.lbl_prompt.setText(self.t["lbl_prompt"])
@@ -243,7 +227,6 @@ class MainWindow(QMainWindow):
         # Toggle all UI elements between processing/idle states.
         self.control_panel.set_processing_state(is_processing)
         self.output_panel.set_processing_state(is_processing)
-        self.btn_settings.setEnabled(not is_processing)
         self.btn_unload.setEnabled(not is_processing)
         self.combo_lang.setEnabled(not is_processing)
         self.combo_prompts.setEnabled(not is_processing)
@@ -260,7 +243,7 @@ class MainWindow(QMainWindow):
         self._pending_pid = self.combo_prompts.currentData()
 
         # Run pre-checks in background thread
-        self.precheck_worker = PreCheckWorker(self.client, config.OLLAMA_MODEL)
+        self.precheck_worker = PreCheckWorker()
         self.precheck_worker.finished.connect(self.on_precheck_finished)
         self.precheck_worker.start()
 
@@ -268,48 +251,43 @@ class MainWindow(QMainWindow):
     def on_precheck_finished(self, success, error_type, error_msg):
         if not success:
             self.set_processing_state(False)
-
-            if error_type == 'connection':
-                print(f"on_precheck_finished(): {error_msg}", file=sys.stderr)
-                QMessageBox.critical(self, self.t["title_error"], self.t["msg_connection_error"].format(config.OLLAMA_HOST))
-            elif error_type == 'model':
-                print(f"on_precheck_finished(): {error_msg}", file=sys.stderr)
-                QMessageBox.critical(self, self.t["title_error"], self.t["msg_model_missing"].format(config.OLLAMA_MODEL, config.OLLAMA_MODEL))
+            QMessageBox.critical(self, self.t["title_error"], error_msg)
             return
 
-        # Pre-checks passed, show disclaimer then start processing
-        QMessageBox.information(self, self.t["title_disclaimer"], self.t["msg_loop_disclaimer"])
+        # Pre-checks passed, start processing
 
         prompt_template = config.PROMPTS.get(self._pending_pid, config.PROMPTS[config.DEFAULT_PROMPT])
-        self.start_processing(self._pending_queue, prompt_template, config.OLLAMA_MODEL, self._pending_pid)
+        self.start_processing(self._pending_queue, prompt_template, self._pending_pid)
 
-    def start_processing(self, queue, prompt_template, model_name, prompt_id=None):
+    def start_processing(self, queue, prompt_template, prompt_id=None):
         # Start OCR worker thread to process the queue.
         self.output_panel.clear()
 
         # Clean output folder
         try:
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            output_dir = os.path.join(base_dir, "output")
-            if os.path.exists(output_dir):
-                for filename in os.listdir(output_dir):
-                    file_path = os.path.join(output_dir, filename)
+            import shutil
+            if os.path.exists(config.OUTPUT_DIR):
+                for filename in os.listdir(config.OUTPUT_DIR):
+                    file_path = os.path.join(config.OUTPUT_DIR, filename)
                     try:
-                        if os.path.isfile(file_path):
-                            os.remove(file_path)
-                    except Exception:
-                        pass
+                        if os.path.isfile(file_path) or os.path.islink(file_path):
+                            os.unlink(file_path)
+                        elif os.path.isdir(file_path):
+                            shutil.rmtree(file_path)
+                    except Exception as e:
+                        print(f"Failed to delete {file_path}: {e}")
         except Exception as e:
             print(f"Failed to clean output directory: {e}")
 
         self.set_processing_state(True)
+        self.auto_unload_timer.stop()
         self.batch_start_time = time.time()
 
         # Windows-specific taskbar progress indicator
         if self.taskbar:
             self.taskbar.set_progress(int(self.winId()), 0, len(queue))
 
-        self.worker = OCRWorker(self.client, queue, prompt_template, model_name, prompt_id)
+        self.worker = OCRWorker(queue, prompt_template, prompt_id)
 
         # Connect worker signals -> UI updates
         self.worker.stream_chunk.connect(self.output_panel.append_text)
@@ -365,6 +343,9 @@ class MainWindow(QMainWindow):
             total_duration = time.time() - self.batch_start_time
             total_str = self.t["msg_total"].format(total_duration)
             QMessageBox.information(self, self.t["title_done"], f"{self.t['msg_done']}\n{total_str}")
+
+        # Start 5-minute auto-unload timer (300,000 ms)
+        self.auto_unload_timer.start(5 * 60 * 1000)
 
     # ==================== Drag and Drop ====================
     def resizeEvent(self, event):

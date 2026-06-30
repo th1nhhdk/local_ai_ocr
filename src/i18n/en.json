@@ -4,14 +4,6 @@
     "about_text": "<center><img src='{}' width='64' height='64'><br><b>Local AI OCR</b></center><b>Version:</b> {}<br><b>Author:</b> {}",
     "btn_about_git": "GitHub",
 
-    "btn_settings": "Settings",
-    "dlg_settings_title": "Settings",
-    "dlg_settings_warning": "<b>Do not touch these options!<br>(unless you know what you're doing)</b>",
-    "dlg_settings_restore": "Restore Defaults",
-    "dlg_settings_apply": "Apply",
-    "dlg_settings_cancel": "Cancel",
-    "dlg_settings_error": "<b>Error:</b> Invalid values!<br><br><b>IP Address:</b> Only letters, numbers, '/', '.', '-', and ':' are allowed (not ending in ':')<br><b>Port:</b> Numbers in 1 - 65535 range<br><b>AI Model:</b> Only letters, numbers, ':', '-', and '_' are allowed",
-
     "btn_unload": "Unload AI Model",
 
     "btn_add_img": "Add Images",
@@ -28,8 +20,7 @@
     "lbl_prompt": "Select Mode:",
     "prompt_labels": {
         "p_markdown": "Markdown Document (keep formatting)",
-        "p_freeocr": "Free OCR",
-        "p_ocr": "Standard OCR"
+        "p_freeocr": "Free OCR"
     },
 
     "btn_run_ready": "Start Processing ({})",
@@ -51,11 +42,6 @@
     "msg_total": "Total Time: {:.2f}s",
     "msg_model_unloaded": "AI Model unloaded from memory.",
     "msg_model_not_loaded": "AI Model is not currently loaded.",
-
-    "msg_connection_error": "<b>Error:</b> Cannot connect to Ollama at '{}'<br>Have you typed the correct <b>IP Address</b> and <b>Port</b>?",
-    "msg_model_missing": "<b>Error:</b> Cannot find AI Model: '{}'<br>Have you typed the correct <b>Model</b>?",
-
-    "msg_loop_disclaimer": "<b>Disclaimer:</b> Due to technical limitations, the OCR AI <b>might get stuck</b> in an infinite loop.<br>If that happens please press <b>STOP</b>.",
 
     "dlg_page_range_title": "Select Page Range",
     "dlg_page_range_msg": "File: {}<br>Total Pages: {}<br><br>Select pages to import:",

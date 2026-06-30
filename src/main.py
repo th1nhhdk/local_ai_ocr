@@ -11,7 +11,6 @@ sys.path.append(current_dir)
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon
-from ollama import Client
 from ui.main_window import MainWindow
 import config
 
@@ -37,9 +36,7 @@ def main():
     if os.path.exists(icon_path):
         app.setWindowIcon(QIcon(icon_path))
 
-    client = Client(host=config.OLLAMA_HOST)
-
-    window = MainWindow(client)
+    window = MainWindow()
     # We have to use the whole screen...
     window.showMaximized()
 

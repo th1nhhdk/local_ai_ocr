@@ -15,16 +15,6 @@ set "PIP_URL=https://bootstrap.pypa.io/get-pip.py"
 set "PYTHON_BIN=%PYTHON_DIR%\python.exe"
 set "PYTHON_PTH=%PYTHON_DIR%\python313._pth"
 
-set "OLLAMA_DIR=%SCRIPTROOT%ollama"
-set "OLLAMA_VER=v0.21.2"
-set "OLLAMA_ZIP=ollama-windows-amd64.zip"
-set "OLLAMA_DOWNLOAD_URL=https://github.com/ollama/ollama/releases/download/%OLLAMA_VER%/%OLLAMA_ZIP%"
-set "OLLAMA_CHECKSUM_URL=https://github.com/ollama/ollama/releases/download/%OLLAMA_VER%/sha256sum.txt"
-
-set "OLLAMA_BIN=%OLLAMA_DIR%\ollama.exe"
-set "OLLAMA_HOST=http://127.0.0.1:11435"
-set "OLLAMA_MODELS=%SCRIPTROOT%models"
-
 @REM ============================================================
 @REM 1. CHECK & INSTALL PYTHON
 @REM ============================================================
@@ -88,9 +78,20 @@ if exist "%PYTHON_DIR%\Scripts\pip.exe" (
 )
 
 @REM ============================================================
-@REM 4. INSTALL REQUI@REMENTS
+@REM 4. INSTALL PYTORCH
 @REM ============================================================
-echo [4/6] Installing requirements...
+echo [4/6] Installing PyTorch...
+"%PYTHON_BIN%" -m pip install torch==2.12.1 torchvision==0.27.1 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu130 --no-warn-script-location
+if !errorlevel! neq 0 goto :ERROR_PIP
+
+echo - Installing Flash Attention 2 for Python 3.13...
+"%PYTHON_BIN%" -m pip install https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.25/flash_attn-2.8.3+cu130torch2.12-cp313-cp313-win_amd64.whl --no-warn-script-location
+if !errorlevel! neq 0 echo Warning: Failed to install flash-attn wheel. Continuing anyway...
+
+@REM ============================================================
+@REM 5. INSTALL REQUIREMENTS
+@REM ============================================================
+echo [5/6] Installing requirements...
 @REM Pip handles partially installed packages automatically.
 if exist "%SCRIPTROOT%requirements.txt" (
     "%PYTHON_BIN%" -m pip install -r "%SCRIPTROOT%requirements.txt" --no-warn-script-location
@@ -103,90 +104,25 @@ if exist "%SCRIPTROOT%requirements.txt" (
 )
 
 @REM ============================================================
-@REM 5. DOWNLOAD Ollama
+@REM 6. DOWNLOAD MODEL WEIGHTS
 @REM ============================================================
-echo [5/6] Downloading Ollama...
-if exist "%OLLAMA_BIN%" (
-    echo - Ollama found in %OLLAMA_DIR%. Skipping download.
-) else (
-    @REM Download checksum file
-    echo - Downloading checksums...
-    curl.exe -# -L -o sha256sum.txt "%OLLAMA_CHECKSUM_URL%"
-    if !errorlevel! neq 0 goto :ERROR_NETWORK
+echo [6/6] Downloading DeepSeek-OCR-2 Model...
 
-    @REM Extract expected hash
-    set "EXPECTED_HASH="
-    for /f "tokens=1" %%h in ('findstr "%OLLAMA_ZIP%" sha256sum.txt') do set "EXPECTED_HASH=%%h"
+set "MODEL_DIR=%SCRIPTROOT%models"
+if not exist "%MODEL_DIR%" mkdir "%MODEL_DIR%"
 
-    @REM Verify existing zip if present
-    if exist "%OLLAMA_ZIP%" (
-        if defined EXPECTED_HASH (
-            echo - Found %OLLAMA_ZIP%. Verifying checksum...
-            set "FILE_HASH="
-            for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
+set "HF_HOME=%MODEL_DIR%"
 
-            if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
-                echo WARNING: Checksum doesn't match for existing file. Proceeding anyway...
-                echo EXPECTED: !EXPECTED_HASH!
-                echo FOUND: !FILE_HASH!
-            ) else (
-                echo - Checksum verified.
-            )
-        )
-    )
-
-    @REM Download if missing
-    if not exist "%OLLAMA_ZIP%" (
-        echo - Downloading %OLLAMA_ZIP%...
-        curl.exe -# -L -o "%OLLAMA_ZIP%" "%OLLAMA_DOWNLOAD_URL%"
-        if !errorlevel! neq 0 goto :ERROR_NETWORK
-
-        @REM Verify downloaded file
-        if defined EXPECTED_HASH (
-            set "FILE_HASH="
-            for /f "usebackq tokens=*" %%g in (`powershell -Command "(Get-FileHash '%OLLAMA_ZIP%' -Algorithm SHA256).Hash.ToLower()"`) do set "FILE_HASH=%%g"
-            if "!FILE_HASH!" neq "!EXPECTED_HASH!" (
-                echo WARNING: Downloaded file's checksum doesn't match! Proceeding anyway...
-                echo EXPECTED: !EXPECTED_HASH!
-                echo FOUND: !FILE_HASH!
-            )
-        )
-    )
-
-    @REM Cleanup checksum file
-    if exist "sha256sum.txt" del "sha256sum.txt"
-
-    echo - Extracting to %OLLAMA_DIR%...
-    powershell -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%OLLAMA_ZIP%' -DestinationPath '%OLLAMA_DIR%' -Force"
-    if !errorlevel! neq 0 goto :ERROR_OLLAMA_INSTALL
-
-    @REM Clean up zip
-    del "%OLLAMA_ZIP%"
-
-    if not exist "%OLLAMA_BIN%" goto :ERROR_OLLAMA_INSTALL
-)
-
-@REM ============================================================
-@REM 6. DOWNLOAD MODEL
-@REM ============================================================
-echo [6/6] Downloading DeepSeek-OCR Model...
-
-echo Starting Ollama...
-start /B "" "%OLLAMA_BIN%" serve >nul 2>&1
-timeout /t 3 /nobreak >nul
-
-echo Downloading deepseek-ocr:3b (FP16)...
-"%OLLAMA_BIN%" pull deepseek-ocr:3b
+echo - Downloading weights from HuggingFace (this might take a while depending on your connection)...
+"%PYTHON_DIR%\Scripts\hf.exe" download Dogacel/Universal-DeepSeek-OCR-2
 if !errorlevel! neq 0 (
-    taskkill /F /IM ollama.exe >nul 2>&1
     echo.
     echo FATAL: Model download failed.
     pause
     exit /b 1
 )
 
-echo Stopping Ollama...
-taskkill /F /IM ollama.exe >nul 2>&1
+echo - Model downloaded successfully.
 
 echo.
 echo INFO: Environment setup complete.
@@ -218,13 +154,6 @@ exit /b 1
 :ERROR_PIP
 echo.
 echo FATAL: Pip installation or Package install failed.
-echo.
-pause
-exit /b 1
-
-:ERROR_OLLAMA_INSTALL
-echo.
-echo FATAL: Ollama installation failed.
 echo.
 pause
 exit /b 1

@@ -14,14 +14,14 @@ pillow_heif.register_heif_opener()
 Image.MAX_IMAGE_PIXELS = None
 
 
-# Ollama already handled the image padding
-# See: https://github.com/ollama/ollama/blob/main/model/models/deepseekocr/imageprocessor.go
+# DeepSeek-OCR-2 handles image partitioning and cropping internally
+# using its `deepseek_vl_v2` dynamic resolution logic.
 def preprocess_image(img: Image.Image) -> bytes:
     # Apply standard preprocessing and return PNG bytes.
-    # We DO NOT resize or pad here because Ollama needs the original
-    # high-resolution image to perform its own multi-view cropping.
+    # We DO NOT resize or pad here because the transformers model needs the 
+    # original high-resolution image to perform its own multi-view cropping.
 
-    # Ensure RGB format (matches Ollama/vLLM implementation)
+    # Ensure RGB format
     if img.mode != 'RGB':
         img = img.convert('RGB')
 

@@ -9,9 +9,10 @@ import os
 import io
 from PIL import Image, ImageOps
 from PySide6.QtCore import QThread, Signal, QUrl
-from ollama_service import stream_ocr_response
+from transformers_service import stream_ocr_response
 import file_handler
 import config
+import uuid
 
 
 class OCRWorker(QThread):
@@ -33,12 +34,10 @@ class OCRWorker(QThread):
     error_occurred = Signal(str)
     box_detected = Signal(list, str)
 
-    def __init__(self, client, queue_items, prompt, model_name, prompt_id=None):
+    def __init__(self, queue_items, prompt, prompt_id=None):
         super().__init__()
-        self.client = client
         self.queue_items = queue_items 
         self.prompt = prompt
-        self.model_name = model_name
         self.prompt_id = prompt_id
         self.is_running = True 
 
@@ -50,7 +49,7 @@ class OCRWorker(QThread):
         """
         if prompt_id == 'p_markdown':
             self.grounding_mode = 'markdown'
-        elif prompt_id == 'p_ocr':
+        elif prompt_id == 'p_freeocr':
             self.grounding_mode = 'ocr'
         else:
             self.grounding_mode = None
@@ -73,21 +72,34 @@ class OCRWorker(QThread):
 
                 start_time = time.time()
                 try:
+                    is_temp_file = False
                     if page_index == -1:
                         # Regular image file
                         img_bytes = file_handler.get_image_bytes(filepath)
+                        target_filepath = filepath
                     else:
                         # PDF page (page_index is 0-based)
                         img_bytes = file_handler.extract_pdf_page_bytes(filepath, page_index)
+                        
+                        # Create output dir if needed
+                        os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+                        temp_filename = f"temp_{uuid.uuid4().hex}.jpg"
+                        target_filepath = os.path.join(config.OUTPUT_DIR, temp_filename)
+                        with open(target_filepath, "wb") as f:
+                            f.write(img_bytes)
+                        is_temp_file = True
                 except Exception as e:
                     self.error_occurred.emit(f"Failed to load {display_name}: {e}")
                     continue
 
                 # Process each chunk from the streaming AI response
                 self.buffer = ""
-                for chunk in stream_ocr_response(self.client, self.model_name, self.prompt, img_bytes, config.INFERENCE_PARAMS):
+                for chunk in stream_ocr_response(self.prompt, target_filepath):
                     if not self.is_running: break 
                     self.process_chunk(chunk, img_bytes)
+                    
+                if is_temp_file and os.path.exists(target_filepath):
+                    os.remove(target_filepath)
 
                 # Flush any remaining text in buffer
                 if self.buffer:

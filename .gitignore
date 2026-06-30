@@ -1,12 +1,9 @@
-/bin/.wget-hsts
 /models/
-/ollama/
 /python/
 /output
 __pycache__/
 /test/
 /*.zip
 /get-pip.py
-/sha256sum.txt
 /TODO
 /.vscode/
