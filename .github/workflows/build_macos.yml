@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Python 3.13
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.13"
 
@@ -38,7 +38,7 @@ jobs:
         zip -r "Local_AI_OCR_macOS_arm64.zip" "Local AI OCR.app"
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: Local_AI_OCR_macOS_arm64
         path: dist/Local_AI_OCR_macOS_arm64.zip
