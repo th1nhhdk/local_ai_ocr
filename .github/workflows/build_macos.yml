@@ -45,7 +45,7 @@ jobs:
 
     - name: Upload to Release
       if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         files: dist/Local_AI_OCR_macOS_arm64.zip
       env:
