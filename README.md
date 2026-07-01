@@ -1,6 +1,6 @@
 <img src='src/res/icon.png' width='128' height='128'>
 
-### Ngôn ngữ:
+### Languages:
 Tiếng Việt |
 [English](README_en.md)
 
@@ -33,7 +33,7 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 
 - **Lưu ý:** Bạn vẫn có thể chạy phần mềm này mặc dù không đạt yêu cầu hệ thống (**thậm chí không GPU vẫn chạy được**), nhưng tốc độ sẽ chậm hơn nhiều.
 
-- **OS:** Windows 10 trở lên
+- **OS:** Windows 10 trở lên, macOS (Apple Silicon), hoặc Linux
 - **CPU:** Tối thiểu 4 lõi/8 luồng
 - **RAM:** Tối thiểu 16GB
 - **Dung lượng trống:** Khoảng 11GB
@@ -42,8 +42,10 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 
 ## Tải về và thiết lập
 
-0. Tải file `.zip` trong mục Releases (bên phải, dưới About), giải nén nó ra
-1. Chạy `env_setup.cmd`
+0. Tải file `.zip` (hoặc `.tar.gz` cho Linux) trong mục Releases (bên phải, dưới About), giải nén nó ra
+1. **Windows:** Chạy `env_setup.cmd`
+   **Linux:** Mở Terminal ở thư mục dự án, cấp quyền thực thi với `chmod +x *.sh` và chạy `./env_setup_linux.sh`
+   **macOS:** Tải trực tiếp file `.zip` dành cho macOS từ mục Releases, giải nén ra sẽ có `Local AI OCR.app`. Lần khởi động đầu tiên sẽ tự động tải model (6.67GB).
    - **Lưu ý:** Script này sẽ tải về file (weights) AI nặng 6.67 GB
 
 - Bạn đã hoàn thành việc thiết lập phần mềm, phần mềm sẽ không cần kết nối mạng nữa.
@@ -57,8 +59,9 @@ Một phần mềm OCR **nội bộ**, **offline** (sau khi thiết lập lần 
 ## Hướng dẫn sử dụng
 
 1. **Khởi động phần mềm:**
-   - Chạy file `run.cmd` để khởi động phần mềm (sử dụng GPU nếu có thể).
-   - Nếu bạn muốn ép phần mềm chạy bằng CPU, hãy dùng `run_cpu-only.cmd`.
+   - **Windows:** Chạy file `run.cmd` để khởi động phần mềm (sử dụng GPU nếu có thể). Nếu bạn muốn ép phần mềm chạy bằng CPU, hãy dùng `run_cpu-only.cmd`.
+   - **Linux:** Chạy `./run_linux.sh` (sử dụng GPU) hoặc `./run_linux_cpu-only.sh` (chỉ dùng CPU).
+   - **macOS:** Kích đúp vào ứng dụng `Local AI OCR.app` để chạy.
 
 2. **Sử dụng phần mềm:**
    - **2a. Quản lý tệp tin:**

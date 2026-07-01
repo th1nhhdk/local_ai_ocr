@@ -14,8 +14,25 @@ APP_ID = f"th1nhhdk.localaiocr.{APP_VERSION}"
 # Supported file extensions for Adding files and Drag and drop
 IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.webp', '.heic', '.heif'}
 
+# Determine base directory
+if getattr(sys, 'frozen', False):
+    # PyInstaller bundle
+    if sys.platform == 'darwin':
+        # macOS Application Support
+        BASE_DIR = os.path.expanduser("~/Library/Application Support/Local AI OCR")
+    else:
+        # Windows/Linux PyInstaller bundle
+        BASE_DIR = os.path.dirname(sys.executable)
+else:
+    # Running from source
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Output directory for temporary images and crops
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+
+# Models directory
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+os.environ["HF_HOME"] = MODEL_DIR
 
 # DeepSeek-OCR-2 Prompts
 PROMPTS = {

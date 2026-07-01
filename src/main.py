@@ -36,6 +36,14 @@ def main():
     if os.path.exists(icon_path):
         app.setWindowIcon(QIcon(icon_path))
 
+    # Trigger macOS native download dialog if missing model (frozen bundle only)
+    if getattr(sys, 'frozen', False) and sys.platform == 'darwin':
+        try:
+            from macos.model_download import check_and_download_model
+            check_and_download_model()
+        except Exception as e:
+            print(f"macOS model downloader error: {e}")
+
     window = MainWindow()
     # We have to use the whole screen...
     window.showMaximized()

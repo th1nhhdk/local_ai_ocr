@@ -32,7 +32,7 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 
 - **Note:** You can still run this software even if you don't meet the system requirements (**even without a GPU, it still works**), but the speed will be much slower.
 
-- **OS:** Windows 10 or later
+- **OS:** Windows 10 or newer, macOS (Apple Silicon), or Linux
 - **CPU:** Minimum 4 cores/8 threads
 - **RAM:** Minimum 16GB
 - **Free storage:** About 11GB
@@ -41,8 +41,10 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 
 ## Download and Setup
 
-0. Download the `.zip` file from the Releases section (on the right, under About), extract it
-1. Run `env_setup.cmd`
+0. Download the `.zip` file (or `.tar.gz` for Linux) in the Releases section (on the right, under About) and extract it.
+1. **Windows:** Run `env_setup.cmd`
+   **Linux:** Open Terminal in the project folder, grant execution rights via `chmod +x *.sh` and run `./env_setup_linux.sh`
+   **macOS:** Download the macOS `.zip` directly from Releases and extract it to get `Local AI OCR.app`. The first startup will automatically download the 6.67GB AI model.
    - **Note:** This script will download the AI weights file, which is 6.67 GB
 
 - You have completed the software setup; the software will no longer need a network connection.
@@ -55,9 +57,10 @@ An **local**, **offline** (after initial setup), **portable** OCR software that 
 
 ## Usage Guide
 
-1. **Launch the software:**
-   - Run the `run.cmd` file to start the software (uses GPU if available).
-   - If you want to force the software to run on CPU, use `run_cpu-only.cmd`.
+1. **Starting the software:**
+   - **Windows:** Run `run.cmd` to start the software (uses GPU if available). If you want to force CPU execution, use `run_cpu-only.cmd`.
+   - **Linux:** Run `./run_linux.sh` (GPU) or `./run_linux_cpu-only.sh` (CPU-only).
+   - **macOS:** Double click the `Local AI OCR.app` to run.
 
 2. **Using the software:**
    - **2a. File management:**

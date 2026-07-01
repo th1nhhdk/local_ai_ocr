@@ -1,0 +1,47 @@
+name: Build macOS App
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install torch==2.12.1 torchvision==0.27.1 torchaudio==2.11.0
+        pip install -r requirements.txt
+
+    - name: Build macOS App Bundle
+      run: |
+        pyinstaller --windowed --noconfirm --name "Local AI OCR" --icon src/res/icon.png src/main.py
+
+    - name: Archive App Bundle
+      run: |
+        cd dist
+        zip -r "Local_AI_OCR_macOS_arm64.zip" "Local AI OCR.app"
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Local_AI_OCR_macOS_arm64
+        path: dist/Local_AI_OCR_macOS_arm64.zip
+
+    - name: Upload to Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/Local_AI_OCR_macOS_arm64.zip
