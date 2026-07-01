@@ -2,7 +2,7 @@
 import sys
 import os
 
-APP_VERSION = "v3.0.0"
+APP_VERSION = "v3.0.1"
 APP_AUTHOR = "Nguyễn Phước Thịnh"
 PROJECT_URL = "https://github.com/th1nhhdk/local_ai_ocr"
 

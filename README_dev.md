@@ -1,6 +1,6 @@
 <img src='src/res/icon.png' width='128' height='128'>
 
-# Local AI OCR (v3.0.0)
+# Local AI OCR (v3.0.1)
 
 ## Tech Stack
 - **Python:** Embeddable Python `3.13.14`

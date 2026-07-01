@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-set VERSION=v3.0.0
+set VERSION=v3.0.1
 set ARCHIVE_NAME=local_ai_ocr-%VERSION%.zip
 set ZIP=7z.exe
 

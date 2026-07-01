@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="v3.0.0"
+VERSION="v3.0.1"
 ARCHIVE_NAME="local_ai_ocr-${VERSION}-linux.tar.gz"
 
 if [ -f "$ARCHIVE_NAME" ]; then
