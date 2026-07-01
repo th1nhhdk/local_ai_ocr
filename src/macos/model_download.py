@@ -5,6 +5,26 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QProgressBar, QTextE
 from PySide6.QtCore import QThread, Signal, Qt
 import config
 
+class StreamInterceptor:
+    def __init__(self, signal):
+        self.signal = signal
+        self.buffer = ""
+
+    def write(self, text):
+        self.buffer += text
+        while '\n' in self.buffer or '\r' in self.buffer:
+            if '\n' in self.buffer:
+                line, self.buffer = self.buffer.split('\n', 1)
+            else:
+                line, self.buffer = self.buffer.split('\r', 1)
+
+            line = line.strip()
+            if line:
+                self.signal.emit(line)
+
+    def flush(self):
+        pass
+
 class DownloadWorker(QThread):
     log_signal = Signal(str)
     finished_signal = Signal(bool)
@@ -12,30 +32,20 @@ class DownloadWorker(QThread):
     def run(self):
         try:
             os.makedirs(config.MODEL_DIR, exist_ok=True)
-            env = os.environ.copy()
-            env["HF_HOME"] = config.MODEL_DIR
+            os.environ["HF_HOME"] = config.MODEL_DIR
 
-            # Use huggingface-cli
-            cmd = [sys.executable, "-m", "huggingface_hub.cli.cli", "download", "Dogacel/Universal-DeepSeek-OCR-2"]
+            from huggingface_hub import snapshot_download
 
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                env=env,
-                bufsize=1,
-                universal_newlines=True
-            )
+            old_stderr = sys.stderr
+            sys.stderr = StreamInterceptor(self.log_signal)
 
-            for line in process.stdout:
-                self.log_signal.emit(line.strip())
-
-            process.wait()
-            if process.returncode == 0:
+            try:
+                self.log_signal.emit("Starting download of Dogacel/Universal-DeepSeek-OCR-2...")
+                snapshot_download(repo_id="Dogacel/Universal-DeepSeek-OCR-2", repo_type="model")
                 self.finished_signal.emit(True)
-            else:
-                self.finished_signal.emit(False)
+            finally:
+                sys.stderr = old_stderr
+                
         except Exception as e:
             self.log_signal.emit(f"Error: {str(e)}")
             self.finished_signal.emit(False)
@@ -66,11 +76,8 @@ class ModelDownloadDialog(QDialog):
         self.worker.start()
 
     def append_log(self, text):
-        if text:
-            # Simple carriage return handling for tqdm
-            if '\r' in text:
-                text = text.split('\r')[-1]
-            self.log_output.append(text)
+        if text.strip():
+            self.log_output.append(text.strip())
             self.log_output.verticalScrollBar().setValue(
                 self.log_output.verticalScrollBar().maximum()
             )
